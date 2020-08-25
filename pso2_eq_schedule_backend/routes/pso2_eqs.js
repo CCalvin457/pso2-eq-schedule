@@ -1,13 +1,18 @@
 module.exports = (app, db) => {
     app.get('/latesteq', async (req, res) => {
-        // console.log(db);
-        let eqDocs = await db.collection('eqs').where('latest', '==', true).limit(1).get();
-        
+        let eqDocs = {};
+
+        try {
+            eqDocs = await db.collection('eqs').where('latest', '==', true).limit(1).get();
+        } catch(error) {
+            return res.status(403).send('Permission denied');
+        }
+
         if(eqDocs.empty || eqDocs.size === 0) {
             return res.status(400).send('no document found');
         }
 
-        console.log(eqDocs.docs[0].data());
+        // console.log(eqDocs.docs[0].data());
 
         let currentSchedule = eqDocs.docs[0].data();
 
@@ -15,8 +20,14 @@ module.exports = (app, db) => {
     });
 
     app.get('/alleqs', async (req, res) => {
+        let eqDocs = {};
         let eqs = [];
-        let eqDocs = await db.collection('eqs').get();
+
+        try {
+            eqDocs = await db.collection('eqs').get();
+        } catch(error) {
+            return res.status(403).send('Permission denied');
+        }
 
         if(eqDocs.empty || eqDocs.size === 0) {
             return res.status(400).send('no document found');
