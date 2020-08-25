@@ -34,7 +34,7 @@ import moment from 'moment'
 // import { getLocalTime } from '../common/time'
     export default {
         props: {
-            event: Object
+            event: {}
         },
         data() {
             return {
@@ -42,11 +42,11 @@ import moment from 'moment'
             }
         },
 
-        mounted() {
-            this.localTime = this.getLocalTime()
+        created() {
+            this.localTime = this.getLocalTime
         },
 
-        methods: {
+        computed: {
             getLocalTime () {
                 let localTimeZone = moment.tz.guess()
                 let localTimeZoneOffset = moment().utcOffset()

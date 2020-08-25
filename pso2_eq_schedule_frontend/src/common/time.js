@@ -1,6 +1,6 @@
 import moment from 'moment'
 
-export function getLocalTime(time) {
+export function convertToLocalTime(time) {
     let timeZone = 'America/Los_Angeles' // Find way to not hard code this
     let localTimeZone = moment.tz.guess() // Put in vuex store?
 
@@ -8,4 +8,8 @@ export function getLocalTime(time) {
     let localTime = eqTime.clone().tz(localTimeZone)
     
     return localTime
+}
+
+export function getLocalTime() {
+    return moment().format('hh:mm A')
 }

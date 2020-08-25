@@ -4,8 +4,8 @@
     <v-container>
       <v-row class="pb-4">
         <v-col cols="12">
-          <p class="text-center text-h6">Upcoming Event:</p>
-          <!-- <EqCard></EqCard> -->
+          <p class="text-center text-h6">{{ isUpcoming ?  'Upcoming' : 'Ongoing'}} Event:</p>
+          <EqCard v-if="getNextEvent != null" :event="getNextEvent"></EqCard>
         </v-col>
       </v-row>
 
@@ -32,24 +32,41 @@
 import DateInfo from '@/components/DateInfo.vue'
 import EqCard from '@/components/EqCard.vue'
 import { mapGetters } from 'vuex'
+import moment from 'moment'
 export default {
   name: 'Home',
   components: {
     DateInfo,
     EqCard
   },
-  
-  data() {
-    return {
-      nextEvent: Object
-    }
-  },
 
   computed: {
     ...mapGetters({
       eqs: 'getTodaysEqs',
       localTime: 'getLocalTime'
-    })
+    }),
+
+    getNextEvent() {
+      let nextEvents = this.eqs.filter(eq => 
+        (moment(this.localTime, 'h:mm A').isBefore(moment(eq.startlocaltime, 'h:mm A'))) ||
+        (moment(this.localTime, 'h:mm A').isBefore(moment(eq.endlocaltime, 'h:mm A'))) ||
+        (moment(this.localTime, 'h:mm A').isSame(moment(eq.endlocaltime, 'h:mm A'))))
+      
+      
+      if(nextEvents.length >= 1) {
+        console.log(nextEvents[0])
+        return nextEvents[0]
+      }
+      return null;
+    },
+
+    isUpcoming() {
+      if(this.getNextEvent == null) {
+        return true
+      }
+      console.log(moment(this.localTime, 'h:mm A').isBefore(moment(this.getNextEvent.startlocaltime, 'h:mm A')))
+      return moment(this.localTime, 'h:mm A').isBefore(moment(this.getNextEvent.startlocaltime, 'h:mm A'))
+    }    
   }
 
 }

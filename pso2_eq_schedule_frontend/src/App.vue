@@ -38,7 +38,7 @@
     </v-app-bar>
 
     <v-main>
-      <router-view/>
+      <router-view v-if="isLoaded"/>
     </v-main>
 
     <v-footer height="50px">
@@ -48,8 +48,7 @@
 </template>
 
 <script>
-// import { mapGetters } from 'vuex'
-// import moment from 'moment'
+import { mapGetters } from 'vuex'
 export default {
   name: 'App',
 
@@ -58,6 +57,12 @@ export default {
   data: () => ({
     //
   }),
+
+  computed: {
+    ...mapGetters({
+      isLoaded: 'getIsLoaded'
+    })
+  },
 
   beforeCreate() {
     this.$store.dispatch('getLatestSchedule')
