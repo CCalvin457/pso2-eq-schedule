@@ -12,6 +12,19 @@
       <v-row>
         <v-col cols="12">
           <p class="text-center text-h6">Today's Events:</p>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="4">
+          <EqCard></EqCard>
+        </v-col>
+        <v-col cols="4">
+          <EqCard></EqCard>
+        </v-col>
+        <v-col cols="4">
+          <EqCard></EqCard>
+        </v-col>
+        <v-col cols="4">
           <EqCard></EqCard>
         </v-col>
       </v-row>
