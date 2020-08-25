@@ -28,22 +28,33 @@ import Moment from 'moment-timezone';
                 localTimeZone: ''
             }
         },
+        beforeCreate() {
+            let momentNow = moment();
+            this.localTime = momentNow.format('hh:mm A');
+            this.$store.dispatch('setLocalTime', this.localTime);
+        },
         created() {
             this.getLocalDateInfo();
             this.getLocalTimeZone();
+            this.setLocalTime();
         },
         methods: {
             getLocalDateInfo() {
                 setInterval(() => {
                     let momentNow = moment();
-                    this.localTime = momentNow.format('hh:mm a');
+                    this.localTime = momentNow.format('hh:mm A');
                     this.localDate = momentNow.format('dddd, MMMM Do, YYYY');
-                }, 100);
+                }, 1000);
             },
             getLocalTimeZone() {
                 let timeZone = Moment.tz.guess();
                 let utcOffset = moment().format('Z');
                 this.localTimeZone = `${timeZone} | GMT ${utcOffset}`;
+            },
+            setLocalTime() {
+                setInterval(() => {
+                    this.$store.dispatch('setLocalTime', this.localTime);
+                }, 10000);
             }
         }
     }

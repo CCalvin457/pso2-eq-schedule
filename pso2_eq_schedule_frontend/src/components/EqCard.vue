@@ -4,7 +4,7 @@
             <p class="text-center text-h6">{{ event.name }} <!-- Eq name --></p>
         </v-card-title>
         <v-card-subtitle class="rm-bottom">
-            <p class="text-center text-h6">{{ event.eventtype }} <!-- Eq eventtype --></p>
+            <p class="text-center text-h6" :style="[event.eventtype === 'Urgent Quest' ? {'color': 'Red'} : { 'color': ' LightBlue'}]">{{ event.eventtype }} <!-- Eq eventtype --></p>
         </v-card-subtitle>
         <v-card-text>
             <v-container >
@@ -31,21 +31,21 @@
 
 <script>
 import moment from 'moment'
+import { getLocalTime } from '../common/time'
     export default {
         props: {
             event: Object
         },
 
         computed: {
-            getLocalTime() {
-                let timeZone = 'America/Los_Angeles' // Find way to not hard code this
-                let localTimeZone = moment.tz.guess() // Put in vuex store?
-                let localTimeZoneOffset = moment().utcOffset() // Put in vuex store?
-                
-                let eqTime = moment.tz(this.event.time, 'h:mm A', timeZone)
-                let localTime = eqTime.clone().tz(localTimeZone).format('h:mm A')
-                
-                return `${localTime} ${moment.tz.zone(localTimeZone).abbr(localTimeZoneOffset)}`
+            getLocalTime () {
+                let localTimeZone = moment.tz.guess()
+                let localTimeZoneOffset = moment().utcOffset()
+                let timeZoneAbbr = moment.tz.zone(localTimeZone).abbr(localTimeZoneOffset)
+                let localTime = getLocalTime(this.event.time).format('h:mm A')
+
+                return `${localTime} ${timeZoneAbbr}`
+
             }
         }
     }
