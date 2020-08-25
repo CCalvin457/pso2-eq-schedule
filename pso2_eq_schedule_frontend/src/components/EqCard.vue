@@ -15,7 +15,7 @@
                     </v-col>
                     <v-col cols="6">
                         <div class="text-center text-body-1"><strong>Local Start Time:</strong></div>
-                        <p class="text-center text-body-1">{{ getLocalTime }}<!-- Eq local time --></p>
+                        <p class="text-center text-body-1">{{ localTime }}<!-- Eq local time --></p>
                     </v-col>
                 </v-row>
                 <v-row>
@@ -31,21 +31,29 @@
 
 <script>
 import moment from 'moment'
-import { getLocalTime } from '../common/time'
+// import { getLocalTime } from '../common/time'
     export default {
         props: {
             event: Object
         },
+        data() {
+            return {
+                localTime: ''
+            }
+        },
 
-        computed: {
+        mounted() {
+            this.localTime = this.getLocalTime()
+        },
+
+        methods: {
             getLocalTime () {
                 let localTimeZone = moment.tz.guess()
                 let localTimeZoneOffset = moment().utcOffset()
                 let timeZoneAbbr = moment.tz.zone(localTimeZone).abbr(localTimeZoneOffset)
-                let localTime = getLocalTime(this.event.time).format('h:mm A')
+                let localTime = this.event.startlocaltime
 
                 return `${localTime} ${timeZoneAbbr}`
-
             }
         }
     }

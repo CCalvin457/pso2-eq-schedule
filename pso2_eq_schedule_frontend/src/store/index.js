@@ -76,8 +76,6 @@ export default new Vuex.Store({
                 eqs.push(temp)
             });
 
-            console.log(eqs)
-
             commit('SET_TODAYS_EQS', eqs)
         },
 
