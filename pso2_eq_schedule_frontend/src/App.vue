@@ -40,11 +40,16 @@
     <v-main>
       <router-view/>
     </v-main>
+
+    <v-footer height="50px">
+      <span class="mx-auto text-center text-caption"><strong>Disclaimer: We are NOT affiliated with PSO2, this is a fan site dedicated to the game.</strong></span>
+    </v-footer>
   </v-app>
 </template>
 
 <script>
-
+// import { mapGetters } from 'vuex'
+// import moment from 'moment'
 export default {
   name: 'App',
 
@@ -53,5 +58,9 @@ export default {
   data: () => ({
     //
   }),
+
+  beforeCreate() {
+    this.$store.dispatch('getLatestSchedule')
+  }
 };
 </script>

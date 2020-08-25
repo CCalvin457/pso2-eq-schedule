@@ -5,7 +5,7 @@
       <v-row class="pb-4">
         <v-col cols="12">
           <p class="text-center text-h6">Upcoming Event:</p>
-          <EqCard></EqCard>
+          <!-- <EqCard></EqCard> -->
         </v-col>
       </v-row>
       <v-divider></v-divider>
@@ -15,18 +15,23 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="4">
+        <v-col xl="4" md="6" sm="12"
+          v-for="(eq, index) in eqs" :key="index"
+        >
+          <EqCard :event="eq"></EqCard>
+        </v-col>
+        <!-- <v-col lg="4" md="6" sm="12">
           <EqCard></EqCard>
         </v-col>
-        <v-col cols="4">
+        <v-col lg="4" md="6" sm="12">
           <EqCard></EqCard>
         </v-col>
-        <v-col cols="4">
+        <v-col lg="4" md="6" sm="12">
           <EqCard></EqCard>
         </v-col>
-        <v-col cols="4">
+        <v-col lg="4" md="6" sm="12">
           <EqCard></EqCard>
-        </v-col>
+        </v-col> -->
       </v-row>
     </v-container>
   </div>
@@ -36,12 +41,20 @@
 // @ is an alias to /src
 import DateInfo from '@/components/DateInfo.vue'
 import EqCard from '@/components/EqCard.vue'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Home',
   components: {
     DateInfo,
     EqCard
+  },
+  
+  computed: {
+    ...mapGetters({
+      eqs: 'getTodaysEqs'
+    })
   }
+
 }
 </script>
