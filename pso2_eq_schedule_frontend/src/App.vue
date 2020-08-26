@@ -6,7 +6,7 @@
       dark
     >
       <div class="d-flex align-center">
-        <span class="text-h4">
+        <span class="text-h4 homeButton" @click="goHome">
           <strong>PSO2 NA Schedule</strong>
         </span>
         <!-- <v-img
@@ -28,16 +28,15 @@
         /> -->
       </div>
 
-      <!-- <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
 
       <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
+        to="/current-schedule"
         text
       >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn> -->
+        <span class="mr-2">Current Schedule</span>
+        <v-icon dense>mdi-calendar-range</v-icon>
+      </v-btn>
     </v-app-bar>
 
     <v-main>
@@ -86,8 +85,21 @@ export default {
     });
   },
 
+  methods: {
+    goHome() {
+      if(this.$router.history.current.path != '/')
+        this.$router.push({ path: '/' })
+    }
+  },
+
   beforeDestroy() {
     this.unsubscribe();
   }
 };
 </script>
+
+<style lang="scss" scoped>
+  .homeButton:hover {
+    cursor: pointer;
+  }
+</style>

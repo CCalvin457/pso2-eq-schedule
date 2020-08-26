@@ -25,7 +25,7 @@
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row v-if="filteredEqs.length > 6">
           <v-col cols="12">
             <v-pagination :length="paginationLength" v-model="page"></v-pagination>
           </v-col>
