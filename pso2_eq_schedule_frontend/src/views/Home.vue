@@ -4,7 +4,7 @@
     <v-container>
       <v-row class="pb-4">
         <v-col cols="12">
-          <p class="text-center text-h6">{{ isUpcoming ?  'Upcoming' : 'Ongoing'}} Event:</p>
+          <p class="text-center text-h6">{{ isUpcoming ?  'Next' : 'Ongoing'}} Event:</p>
           <EqCard v-if="getNextEvent != null" :event="getNextEvent"></EqCard>
         </v-col>
       </v-row>
@@ -13,7 +13,7 @@
 
       <v-row>
         <v-col cols="12">
-          <p class="text-center text-h6">Today's Events:</p>
+          <p class="text-center text-h6">Upcoming Events:</p>
         </v-col>
       </v-row>
 

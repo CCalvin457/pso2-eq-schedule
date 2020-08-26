@@ -4,7 +4,11 @@
             <p class="text-center text-h6">{{ event.name }} <!-- Eq name --></p>
         </v-card-title>
         <v-card-subtitle class="rm-bottom">
-            <p class="text-center text-h6" :style="[event.eventtype === 'Urgent Quest' ? {'color': 'Red'} : { 'color': ' LightBlue'}]">{{ event.eventtype }} <!-- Eq eventtype --></p>
+            <p class="text-center text-h6" 
+            :style="[event.eventtype === 'Urgent Quest' ? {'color': 'Red'} : { 'color': ' LightBlue'}]">
+                {{ event.eventtype }} <!-- Eq eventtype -->
+            </p>
+            <p class="text-center text-h6">{{ getLocalDate }}</p>
         </v-card-subtitle>
         <v-card-text>
             <v-container >
@@ -15,7 +19,7 @@
                     </v-col>
                     <v-col cols="6">
                         <div class="text-center text-body-1"><strong>Local Start Time:</strong></div>
-                        <p class="text-center text-body-1">{{ localTime }}<!-- Eq local time --></p>
+                        <p class="text-center text-body-1">{{ getLocalTime }}<!-- Eq local time --></p>
                     </v-col>
                 </v-row>
                 <v-row>
@@ -31,19 +35,10 @@
 
 <script>
 import moment from 'moment'
-// import { getLocalTime } from '../common/time'
+import { convertToLocalDate } from '../common/time'
     export default {
         props: {
             event: {}
-        },
-        data() {
-            return {
-                localTime: ''
-            }
-        },
-
-        created() {
-            this.localTime = this.getLocalTime
         },
 
         computed: {
@@ -54,6 +49,12 @@ import moment from 'moment'
                 let localTime = this.event.startlocaltime
 
                 return `${localTime} ${timeZoneAbbr}`
+            },
+
+            getLocalDate() {
+                let date = convertToLocalDate(this.event.date, this.event.time)
+                date = date.clone().format('dddd, MMMM Do, YYYY')
+                return date
             }
         }
     }

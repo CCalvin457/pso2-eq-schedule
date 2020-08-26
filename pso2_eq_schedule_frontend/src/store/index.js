@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { getLatestSchedule } from '../common/api'
+import { getLatestSchedule, getEqsFromDateOnwards } from '../common/api'
 import { convertToLocalTime, getLocalDateTime } from '../common/time'
 import moment from 'moment'
 
@@ -43,7 +43,7 @@ export default new Vuex.Store({
             state.currentEq = latestSchedule
         },
 
-        SET_TODAYS_EQS(state, todaysEqs) {
+        SET_EQS_LIST(state, todaysEqs) {
             state.todaysEq = todaysEqs
         },
 
@@ -63,21 +63,22 @@ export default new Vuex.Store({
     actions: {
         getLatestSchedule({commit, dispatch}) {
             commit('UPDATE_IS_LOADED', false)
-            return getLatestSchedule().then(latestSchedule => {
+            return getLatestSchedule().then(async latestSchedule => {
                 commit('SET_CURRENT_EQ', latestSchedule)
                 let date = moment().format('M/DD')
-                let todaysEvents = latestSchedule.eqinfo.filter(item => item.date === date)
-                dispatch('setTodaysEqs', todaysEvents[0])
+                // let todaysEvents = latestSchedule.eqinfo.filter(item => item.date === date)
+                let eqs = await getEqsFromDateOnwards(date)
+                dispatch('setEqsList', eqs)
                 dispatch('setLocalDateTime')
                 commit('UPDATE_IS_LOADED', true)
             })
         },
 
-        setTodaysEqs({commit}, todaysEqs) {
+        setEqsList({commit}, eqsList) {
             let eqs = []
 
             // Adding the local starting and ending times based event time and duration
-            todaysEqs.events.forEach(eq => {
+            eqsList.forEach(eq => {
                 let temp = eq
 
                 let duration = eq.duration.split(" ")[0]
@@ -91,11 +92,11 @@ export default new Vuex.Store({
 
                 temp.startlocaltime = localTime.format('h:mm A')
                 temp.endlocaltime = endTime.format('h:mm A')
-
+                
                 eqs.push(temp)
             });
 
-            commit('SET_TODAYS_EQS', eqs)
+            commit('SET_EQS_LIST', eqs)
         },
 
         setLocalDateTime({commit, state}) {

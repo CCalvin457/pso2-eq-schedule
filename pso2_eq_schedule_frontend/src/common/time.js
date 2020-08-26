@@ -11,6 +11,18 @@ export function convertToLocalTime(time) {
     return localTime
 }
 
+export function convertToLocalDate(date, time) {
+    let timeZone = 'America/Los_Angeles'
+    let localTimeZone = Moment.tz.guess()
+
+    let eqDate = moment.tz(`${date} ${time}`, 'M/DD h:mm A', timeZone)
+
+    let localDate = eqDate.clone().tz(localTimeZone)
+
+    return localDate
+    
+}
+
 export function getLocalTime() {
     return moment().format('hh:mm A');
 }
