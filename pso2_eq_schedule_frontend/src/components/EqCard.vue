@@ -1,7 +1,12 @@
 <template>
-    <v-card class="mx-auto" width="500" shaped raised>
+    <v-card class="mx-auto" width="500" height="330" shaped raised>
         <v-card-title primary-title class="justify-center rm-bottom">
-            <p class="text-center text-h6">{{ event.name }} <!-- Eq name --></p>
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                    <p class="text-center text-h6 d-inline-block text-truncate" v-on="on">{{ event.name }} <!-- Eq name --></p>
+                </template>
+                <span>{{ event.name }}</span>
+            </v-tooltip>
         </v-card-title>
         <v-card-subtitle class="rm-bottom">
             <p class="text-center text-h6" 
@@ -56,5 +61,15 @@ import moment from 'moment'
 <style lang="scss" scoped>
 .rm-bottom {
     padding-bottom: 0;
+}
+
+.eventName p {
+    white-space: nowrap;
+    transform: translateX(0);
+    transition: 1s;
+}
+
+.eventName:hover p {
+    transform: translateX(calc(200px - 100%));
 }
 </style>

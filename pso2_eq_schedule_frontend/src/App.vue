@@ -77,7 +77,7 @@ export default {
     
     this.unsubscribe = this.$store.subscribe((mutation, state) => {
       if(mutation.type === 'SET_LOCAL_DATE') {
-        console.log(this.oldLocalDate)
+        // console.log(this.oldLocalDate)
           if(state.currentLocalDate != '' && this.oldLocalDate != state.currentLocalDate) {
             this.$store.dispatch('getLatestSchedule')
             this.oldLocalDate = state.currentLocalDate

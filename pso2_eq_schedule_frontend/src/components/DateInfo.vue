@@ -20,7 +20,6 @@
 <script>
 import moment from 'moment';
 import Moment from 'moment-timezone';
-// import { mapGetters } from 'vuex'
     export default {
         props: {
             localTime: String,
@@ -28,43 +27,20 @@ import Moment from 'moment-timezone';
         },
         data() {
             return {
-                // localTime: '',
-                // localDate: '',
                 localTimeZone: ''
             }
         },
 
         created() {
-            // this.getLocalDateInfo();
             this.getLocalTimeZone();
-            // this.setLocalTime();
         },
 
-        // computed: {
-        //     ...mapGetters({
-        //         localTime: 'getLocalTime',
-        //         localDate: 'getLocalDate'
-        //     })
-        // },
-
         methods: {
-            // getLocalDateInfo() {
-            //     setInterval(() => {
-            //         let momentNow = moment();
-            //         this.localTime = momentNow.format('hh:mm A');
-            //         this.localDate = momentNow.format('dddd, MMMM Do, YYYY');
-            //     }, 1000);
-            // },
             getLocalTimeZone() {
                 let timeZone = Moment.tz.guess();
                 let utcOffset = moment().format('Z');
                 this.localTimeZone = `${timeZone} | GMT ${utcOffset}`;
-            },
-            // setLocalTime() {
-            //     setInterval(() => {
-            //         this.$store.dispatch('setLocalDateTime');
-            //     }, 10000);
-            // }
+            }
         }
     }
 </script>
