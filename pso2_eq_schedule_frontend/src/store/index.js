@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { getLatestSchedule } from '../common/api'
-import { convertToLocalTime, getLocalTime } from '../common/time'
+import { convertToLocalTime, getLocalTime, getLocalDate } from '../common/time'
 import moment from 'moment'
 
 Vue.use(Vuex)
@@ -12,6 +12,7 @@ export default new Vuex.Store({
         allEqs: [], // all eq schedules
         todaysEq: [], // eqs for today
         currentLocalTime: '',
+        currentLocalDate: '',
         isLoaded: false
     },
 
@@ -26,6 +27,10 @@ export default new Vuex.Store({
 
         getLocalTime(state) {
             return state.currentLocalTime
+        },
+
+        getLocalDate(state) {
+            return state.currentLocalDate
         },
 
         getIsLoaded(state) {
@@ -48,6 +53,12 @@ export default new Vuex.Store({
             }
         },
 
+        SET_LOCAL_DATE(state, date) {
+            if(state.currentLocalDate != date) {
+                state.currentLocalDate = date
+            }
+        },
+
         UPDATE_IS_LOADED(state, loaded) {
             state.isLoaded = loaded
         }
@@ -55,12 +66,13 @@ export default new Vuex.Store({
 
     actions: {
         getLatestSchedule({commit, dispatch}) {
+            commit('UPDATE_IS_LOADED', false)
             return getLatestSchedule().then(latestSchedule => {
                 commit('SET_CURRENT_EQ', latestSchedule)
                 let date = moment().format('M/DD')
                 let todaysEvents = latestSchedule.eqinfo.filter(item => item.date === date)
                 dispatch('setTodaysEqs', todaysEvents[0])
-                dispatch('setLocalTime')
+                dispatch('setLocalDateTime')
                 commit('UPDATE_IS_LOADED', true)
             })
         },
@@ -90,9 +102,11 @@ export default new Vuex.Store({
             commit('SET_TODAYS_EQS', eqs)
         },
 
-        setLocalTime({commit}) {
+        setLocalDateTime({commit}) {
             let time = getLocalTime()
+            let date = getLocalDate()
             commit('SET_LOCAL_TIME', time)
+            commit('SET_LOCAL_DATE', date)
         }
     }
 })

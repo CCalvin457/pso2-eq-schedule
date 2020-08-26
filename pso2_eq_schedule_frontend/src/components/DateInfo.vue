@@ -28,11 +28,7 @@ import Moment from 'moment-timezone';
                 localTimeZone: ''
             }
         },
-        beforeCreate() {
-            let momentNow = moment();
-            this.localTime = momentNow.format('hh:mm A');
-            this.$store.dispatch('setLocalTime', this.localTime);
-        },
+
         created() {
             this.getLocalDateInfo();
             this.getLocalTimeZone();
@@ -53,7 +49,7 @@ import Moment from 'moment-timezone';
             },
             setLocalTime() {
                 setInterval(() => {
-                    this.$store.dispatch('setLocalTime', this.localTime);
+                    this.$store.dispatch('setLocalDateTime');
                 }, 10000);
             }
         }

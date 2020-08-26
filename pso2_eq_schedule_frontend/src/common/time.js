@@ -13,3 +13,7 @@ export function convertToLocalTime(time) {
 export function getLocalTime() {
     return moment().format('hh:mm A')
 }
+
+export function getLocalDate() {
+    return moment().format('dddd, MMMM Do, YYYY');
+}

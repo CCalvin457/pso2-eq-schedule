@@ -43,7 +43,8 @@ export default {
   computed: {
     ...mapGetters({
       eqs: 'getTodaysEqs',
-      localTime: 'getLocalTime'
+      localTime: 'getLocalTime',
+      localDate: 'getLocalDate'
     }),
 
     getNextEvent() {
@@ -67,6 +68,12 @@ export default {
       console.log(moment(this.localTime, 'h:mm A').isBefore(moment(this.getNextEvent.startlocaltime, 'h:mm A')))
       return moment(this.localTime, 'h:mm A').isBefore(moment(this.getNextEvent.startlocaltime, 'h:mm A'))
     }    
+  },
+  
+  watch: {
+    localDate() {
+      this.$store.dispatch('getLatestSchedule')
+    }
   }
 
 }
