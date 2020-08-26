@@ -51,7 +51,7 @@ export default {
       let nextEvents = this.eqs.filter(eq => 
         (moment(this.localTime, 'h:mm A').isBefore(moment(eq.startlocaltime, 'h:mm A'))) ||
         (moment(this.localTime, 'h:mm A').isBefore(moment(eq.endlocaltime, 'h:mm A'))) ||
-        (moment(this.localTime, 'h:mm A').isSame(moment(eq.endlocaltime, 'h:mm A'))))
+        (moment(this.localTime, 'h:mm A').isSame(moment(eq.startlocaltime, 'h:mm A'))))
       
       
       if(nextEvents.length >= 1) {
