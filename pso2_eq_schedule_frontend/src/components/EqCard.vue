@@ -24,7 +24,7 @@
                     </v-col>
                     <v-col cols="6">
                         <div class="text-center text-body-1"><strong>Local Start Time:</strong></div>
-                        <p class="text-center text-body-1">{{ getLocalTime }}<!-- Eq local time --></p>
+                        <p class="text-center text-body-1">{{ event.startlocaltime }} <!-- Eq local time --></p>
                     </v-col>
                 </v-row>
                 <v-row>
@@ -39,21 +39,10 @@
 </template>
 
 <script>
-import moment from 'moment'
+// import moment from 'moment'
     export default {
         props: {
             event: {}
-        },
-
-        computed: {
-            getLocalTime () {
-                let localTimeZone = moment.tz.guess()
-                let localTimeZoneOffset = moment().utcOffset()
-                let timeZoneAbbr = moment.tz.zone(localTimeZone).abbr(localTimeZoneOffset)
-                let localTime = this.event.startlocaltime
-
-                return `${localTime} ${timeZoneAbbr}`
-            }
         }
     }
 </script>
@@ -61,15 +50,5 @@ import moment from 'moment'
 <style lang="scss" scoped>
 .rm-bottom {
     padding-bottom: 0;
-}
-
-.eventName p {
-    white-space: nowrap;
-    transform: translateX(0);
-    transition: 1s;
-}
-
-.eventName:hover p {
-    transform: translateX(calc(200px - 100%));
 }
 </style>

@@ -93,11 +93,25 @@ export default {
     },
 
     filteredEqs() {
-      let nextEvents = this.eqs.filter(eq => 
-        !(
-          moment(this.localTime, 'h:mm A').isAfter((moment(eq.startlocaltime, 'h:mm A'))) && 
-          moment(this.localDate, 'dddd, MMMM Do, YYYY').isSame((moment(eq.startlocaldate, 'dddd, MMMM Do, YYYY')))
+      // let localTime = moment(this.localTime, 'h:mm A')
+      // let localDate = moment(this.localDate, 'dddd, MMMM Do, YYYY')
+      let localDay = moment(`${this.localDate} ${this.localTime}`, 'dddd, MMMM Do, YYYY h:mm A')
+      let localNextDay = localDay.clone().add(1, 'days')
+
+      console.log(localNextDay)
+
+      let nextEvents = this.eqs.filter(eq => {
+        // let eventStartTime = moment(eq.startlocaltime, 'h:mm A')
+        // let eventStartDate = moment(eq.startlocaldate, 'dddd, MMMM Do, YYYY')
+        let eventStartDateTime = moment(`${eq.startlocaldate} ${eq.startlocaltime}`, 'dddd, MMMM Do, YYYY h:mm A')
+
+        return (
+          // localTime.isAfter(eventStartTime) && 
+          // localDate.isSame(eventStartDate)
+          eventStartDateTime.isBetween(localDay, localNextDay)
         )
+      }
+        
       );
 
       if(nextEvents.length >= 1) {
