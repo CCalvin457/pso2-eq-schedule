@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { getLatestSchedule } from '../common/api'
-import { convertToLocalTime, getLocalTime, getLocalDate } from '../common/time'
+import { convertToLocalTime, getLocalDateTime } from '../common/time'
 import moment from 'moment'
 
 Vue.use(Vuex)
@@ -85,7 +85,7 @@ export default new Vuex.Store({
                 if(duration >= "60") {
                     duration = "30"
                 }
-
+                
                 let localTime = convertToLocalTime(eq.time)
                 let endTime = localTime.clone().add(duration, 'minutes')
 
@@ -99,16 +99,27 @@ export default new Vuex.Store({
         },
 
         setLocalDateTime({commit, state}) {
-            let time = getLocalTime()
-            let date = getLocalDate()
+            let localDateTime = getLocalDateTime();
 
-            if(state.currentLocalTime != time) {
-                commit('SET_LOCAL_TIME', time)
+            if(state.currentLocalTime != localDateTime.time) {
+                commit('SET_LOCAL_TIME', localDateTime.time)
             }
 
-            if(state.currentLocalDate != date) {
-                commit('SET_LOCAL_DATE', date)
+            if(state.currentLocalDate != localDateTime.date) {
+                commit('SET_LOCAL_DATE', localDateTime.date)
             }
+
+            setInterval(() => {
+                let localDateTime = getLocalDateTime();
+
+                if(state.currentLocalTime != localDateTime.time) {
+                    commit('SET_LOCAL_TIME', localDateTime.time)
+                }
+
+                if(state.currentLocalDate != localDateTime.date) {
+                    commit('SET_LOCAL_DATE', localDateTime.date)
+                }
+            }, 1000);
         }
     }
 })

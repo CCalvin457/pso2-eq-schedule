@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <DateInfo></DateInfo>
+    <DateInfo :localTime="localTime" :localDate="localDate"></DateInfo>
     <v-container>
       <v-row class="pb-4">
         <v-col cols="12">
@@ -50,30 +50,25 @@ export default {
     getNextEvent() {
       let nextEvents = this.eqs.filter(eq => 
         (moment(this.localTime, 'h:mm A').isBefore(moment(eq.startlocaltime, 'h:mm A'))) ||
-        (moment(this.localTime, 'h:mm A').isBefore(moment(eq.endlocaltime, 'h:mm A'))) ||
-        (moment(this.localTime, 'h:mm A').isSame(moment(eq.startlocaltime, 'h:mm A'))))
-      
+        (moment(this.localTime, 'h:mm A').isBefore(moment(eq.endlocaltime, 'h:mm A'))))
       
       if(nextEvents.length >= 1) {
         console.log(nextEvents[0])
         return nextEvents[0]
       }
+
+      console.log(`No next event`);
       return null;
     },
 
     isUpcoming() {
       if(this.getNextEvent == null) {
+        console.log(`No upcoming event`);
         return true
       }
-      console.log(moment(this.localTime, 'h:mm A').isBefore(moment(this.getNextEvent.startlocaltime, 'h:mm A')))
+      console.log(`Upcoming event: ${moment(this.localTime, 'h:mm A').isBefore(moment(this.getNextEvent.startlocaltime, 'h:mm A'))}`)
       return moment(this.localTime, 'h:mm A').isBefore(moment(this.getNextEvent.startlocaltime, 'h:mm A'))
     }    
-  },
-  
-  watch: {
-    localDate() {
-      this.$store.dispatch('getLatestSchedule')
-    }
   }
 
 }

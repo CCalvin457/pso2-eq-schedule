@@ -49,13 +49,14 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { getLocalDate } from './common/time'
 export default {
   name: 'App',
 
   components: {},
 
   data: () => ({
-    //
+    oldLocalDate: ''
   }),
 
   computed: {
@@ -66,6 +67,24 @@ export default {
 
   beforeCreate() {
     this.$store.dispatch('getLatestSchedule')
+  },
+
+  created() {
+    this.oldLocalDate = getLocalDate()
+    
+    this.unsubscribe = this.$store.subscribe((mutation, state) => {
+      if(mutation.type === 'SET_LOCAL_DATE') {
+        console.log(this.oldLocalDate)
+          if(state.currentLocalDate != '' && this.oldLocalDate != state.currentLocalDate) {
+            this.$store.dispatch('getLatestSchedule')
+            this.oldLocalDate = state.currentLocalDate
+          }
+      }
+    });
+  },
+
+  beforeDestroy() {
+    this.unsubscribe();
   }
 };
 </script>
