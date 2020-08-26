@@ -47,16 +47,12 @@ export default new Vuex.Store({
             state.todaysEq = todaysEqs
         },
 
-        SET_LOCAL_TIME(state, time) {
-            if(state.currentLocalTime != time) {
-                state.currentLocalTime = time
-            }
+        SET_LOCAL_TIME(state, time) {            
+            state.currentLocalTime = time            
         },
 
-        SET_LOCAL_DATE(state, date) {
-            if(state.currentLocalDate != date) {
-                state.currentLocalDate = date
-            }
+        SET_LOCAL_DATE(state, date) {            
+            state.currentLocalDate = date            
         },
 
         UPDATE_IS_LOADED(state, loaded) {
@@ -102,11 +98,17 @@ export default new Vuex.Store({
             commit('SET_TODAYS_EQS', eqs)
         },
 
-        setLocalDateTime({commit}) {
+        setLocalDateTime({commit, state}) {
             let time = getLocalTime()
             let date = getLocalDate()
-            commit('SET_LOCAL_TIME', time)
-            commit('SET_LOCAL_DATE', date)
+
+            if(state.currentLocalTime != time) {
+                commit('SET_LOCAL_TIME', time)
+            }
+
+            if(state.currentLocalDate != date) {
+                commit('SET_LOCAL_DATE', date)
+            }
         }
     }
 })
