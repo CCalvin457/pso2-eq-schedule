@@ -8,7 +8,7 @@
             :style="[event.eventtype === 'Urgent Quest' ? {'color': 'Red'} : { 'color': ' LightBlue'}]">
                 {{ event.eventtype }} <!-- Eq eventtype -->
             </p>
-            <p class="text-center text-h6">{{ getLocalDate }}</p>
+            <p class="text-center text-h6">{{ event.startlocaldate }}</p>
         </v-card-subtitle>
         <v-card-text>
             <v-container >
@@ -35,7 +35,6 @@
 
 <script>
 import moment from 'moment'
-import { convertToLocalDate } from '../common/time'
     export default {
         props: {
             event: {}
@@ -49,12 +48,6 @@ import { convertToLocalDate } from '../common/time'
                 let localTime = this.event.startlocaltime
 
                 return `${localTime} ${timeZoneAbbr}`
-            },
-
-            getLocalDate() {
-                let date = convertToLocalDate(this.event.date, this.event.time)
-                date = date.clone().format('dddd, MMMM Do, YYYY')
-                return date
             }
         }
     }

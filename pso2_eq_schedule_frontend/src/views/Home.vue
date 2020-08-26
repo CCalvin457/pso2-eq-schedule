@@ -19,7 +19,7 @@
 
       <v-row>
         <v-col xl="4" md="6" sm="12"
-          v-for="(eq, index) in eqs" :key="index">
+          v-for="(eq, index) in filteredEqs" :key="index">
           <EqCard :event="eq"></EqCard>
         </v-col>
       </v-row>
@@ -68,7 +68,24 @@ export default {
       }
       console.log(`Upcoming event: ${moment(this.localTime, 'h:mm A').isBefore(moment(this.getNextEvent.startlocaltime, 'h:mm A'))}`)
       return moment(this.localTime, 'h:mm A').isBefore(moment(this.getNextEvent.startlocaltime, 'h:mm A'))
-    }    
+    },
+
+    filteredEqs() {
+      let nextEvents = this.eqs.filter(eq => 
+        !(
+          moment(this.localTime, 'h:mm A').isAfter((moment(eq.startlocaltime, 'h:mm A'))) && 
+          moment(this.localDate, 'dddd, MMMM Do, YYYY').isSame((moment(eq.startlocaldate, 'dddd, MMMM Do, YYYY')))
+        )
+      );
+
+      if(nextEvents.length >= 1) {
+          console.log(nextEvents)
+          return nextEvents;
+        }
+
+        console.log('No next events')
+        return null;
+    }
   }
 
 }

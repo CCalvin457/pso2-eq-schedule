@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { getLatestSchedule, getEqsFromDateOnwards } from '../common/api'
-import { convertToLocalTime, getLocalDateTime } from '../common/time'
+import { convertToLocalTime, getLocalDateTime, convertToLocalDate } from '../common/time'
 import moment from 'moment'
 
 Vue.use(Vuex)
@@ -90,6 +90,9 @@ export default new Vuex.Store({
                 let localTime = convertToLocalTime(eq.time)
                 let endTime = localTime.clone().add(duration, 'minutes')
 
+                let localDate = convertToLocalDate(eq.date, eq.time)
+
+                temp.startlocaldate = localDate.format('dddd, MMMM Do, YYYY')
                 temp.startlocaltime = localTime.format('h:mm A')
                 temp.endlocaltime = endTime.format('h:mm A')
                 
