@@ -19,8 +19,14 @@
 
       <v-row>
         <v-col xl="4" md="6" sm="12"
-          v-for="(eq, index) in filteredEqs" :key="index">
+          v-for="(eq, index) in eqListForDisplay" :key="index">
           <EqCard :event="eq"></EqCard>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col cols="12">
+          <v-pagination :length="paginationLength" v-model="page"></v-pagination>
         </v-col>
       </v-row>
     </v-container>
@@ -39,6 +45,11 @@ export default {
     DateInfo,
     EqCard
   },
+
+  data: () => ({
+    page: 1,
+    itemsPerPage: 6
+  }),
 
   computed: {
     ...mapGetters({
@@ -85,6 +96,20 @@ export default {
 
         console.log('No next events')
         return null;
+    },
+
+    eqListForDisplay() {
+      let startIndex = (this.page * this.itemsPerPage) - this.itemsPerPage;
+      let endIndex = (this.page * this.itemsPerPage);
+      return this.filteredEqs.slice(startIndex, endIndex)
+      
+    },
+
+    paginationLength() {
+      let numberOfEvents = this.filteredEqs.length
+      let numberOfEventsPerPage = Math.ceil(numberOfEvents / this.itemsPerPage)
+
+      return numberOfEventsPerPage
     }
   }
 

@@ -11,7 +11,7 @@
             <p class="text-center text-h6">{{ event.startlocaldate }}</p>
         </v-card-subtitle>
         <v-card-text>
-            <v-container >
+            <v-container fluid>
                 <v-row>
                     <v-col cols="6">
                         <div class="text-center text-body-1"><strong>Start Time:</strong></div>
