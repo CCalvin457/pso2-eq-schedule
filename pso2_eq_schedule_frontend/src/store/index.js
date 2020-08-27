@@ -13,7 +13,8 @@ export default new Vuex.Store({
         todaysEq: [], // eqs for today
         currentLocalTime: '',
         currentLocalDate: '',
-        isLoaded: false
+        isLoaded: false,
+        serverTzAbbr: ''
     },
 
     getters: {
@@ -35,6 +36,10 @@ export default new Vuex.Store({
 
         getIsLoaded(state) {
             return state.isLoaded
+        },
+        
+        getTzAbbr(state) {
+            return state.serverTzAbbr
         }
     },
 
@@ -57,6 +62,10 @@ export default new Vuex.Store({
 
         UPDATE_IS_LOADED(state, loaded) {
             state.isLoaded = loaded
+        },
+
+        SET_TZ_ABBR(state, tzAbbr) {
+            state.serverTzAbbr = tzAbbr
         }
     },
 
@@ -69,6 +78,7 @@ export default new Vuex.Store({
                 // let todaysEvents = latestSchedule.eqinfo.filter(item => item.date === date)
                 let eqs = await getEqsFromDateOnwards(date)
                 dispatch('setEqsList', eqs)
+                dispatch('setServerTimeZoneAbbr', latestSchedule.tzabbr)
                 dispatch('setLocalDateTime')
                 commit('UPDATE_IS_LOADED', true)
             })
@@ -124,6 +134,12 @@ export default new Vuex.Store({
                     commit('SET_LOCAL_DATE', localDateTime.date)
                 }
             }, 1000);
+        },
+
+        setServerTimeZoneAbbr({commit, state}, tzAbbr) {
+            if(state.serverTzAbbr != tzAbbr) {
+                commit('SET_TZ_ABBR', tzAbbr)
+            }
         }
     }
 })
