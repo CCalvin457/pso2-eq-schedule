@@ -12,6 +12,9 @@
                     type="custom-weekly"
                     :start="calendarDates.startDate"
                     :end="calendarDates.endDate"
+                    :short-weekdays="false"
+                    :short-months="false"
+                    color="light-blue"
                 ></v-calendar>
             </v-col>
         </v-row>
