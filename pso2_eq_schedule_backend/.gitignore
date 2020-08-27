@@ -111,3 +111,8 @@ dist
 .vscode-test
 
 # End of https://www.toptal.com/developers/gitignore/api/node
+public
+functions
+firebase.json
+.firebaserc
+.firebase
