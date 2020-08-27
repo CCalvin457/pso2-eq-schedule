@@ -23,6 +23,12 @@ export function convertToLocalDate(date, time) {
     
 }
 
+export function convertToDate(date, dateFormat) {
+    let convDate = moment(date, dateFormat)
+
+    return convDate
+}
+
 export function getLocalTime() {
     return moment().format('hh:mm A');
 }

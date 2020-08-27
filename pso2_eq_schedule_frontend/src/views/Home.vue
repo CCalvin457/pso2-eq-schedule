@@ -98,7 +98,7 @@ export default {
       let localDay = moment(`${this.localDate} ${this.localTime}`, 'dddd, MMMM Do, YYYY h:mm A')
       let localNextDay = localDay.clone().add(1, 'days')
 
-      console.log(localNextDay)
+      // console.log(localNextDay)
 
       let nextEvents = this.eqs.filter(eq => {
         // let eventStartTime = moment(eq.startlocaltime, 'h:mm A')
