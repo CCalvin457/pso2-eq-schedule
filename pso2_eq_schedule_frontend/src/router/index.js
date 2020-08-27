@@ -19,10 +19,16 @@ Vue.use(VueRouter)
     path: '/current-schedule',
     name: 'EqSchedule',
     component: EqSchedule
+  },
+  
+  {
+    path: '*',
+    redirect: '/'
   }
 ]
 
 const router = new VueRouter({
+  mode: 'history',
   routes
 })
 

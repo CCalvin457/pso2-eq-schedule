@@ -5,11 +5,9 @@
       color="primary"
       dark
     >
-      <div class="d-flex align-center homeButton" @click="goHome">
-        <span class="text-h4">
-          <strong>PSO2 NA Schedule</strong>
-        </span>
-      </div>
+      <v-toolbar-title class="d-flex align-center homeButton" @click="goHome">
+        <strong>PSO2 NA Schedule</strong>
+      </v-toolbar-title>
 
       <v-spacer></v-spacer>
 
@@ -17,7 +15,7 @@
         to="/current-schedule"
         text
       >
-        <span class="mr-2">Current Schedule</span>
+        <span class="mr-2 d-none d-sm-flex">Current Schedule</span>
         <v-icon dense>mdi-calendar-range</v-icon>
       </v-btn>
     </v-app-bar>
