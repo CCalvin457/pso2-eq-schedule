@@ -19,7 +19,38 @@
                     :events="getEvents"
                     :event-color="getEventColor"
                     color="light-blue"
+                    @click:event="(nativeEvent, event)=>showEvent(nativeEvent, event)"
                 ></v-calendar>
+
+                <v-menu
+                    v-model="selectedOpen"
+                    :close-on-content-click="false"
+                    :activator="selectedElement"
+                    offset-x
+                >
+                    <v-card color="grey lighten-4" min-width="350px" flat>
+                        <v-toolbar :color="selectedEvent.colour">
+                            <v-toolbar-title>
+                                <span>{{ selectedEvent.eventName }} ({{ selectedEvent.eventtype }})</span>
+                            </v-toolbar-title>
+                        </v-toolbar>
+                        <v-card-text>
+                            <span class="cardText">
+                                <strong>Local Start Time: </strong>
+                                {{ selectedEvent.localstarttime }}
+                            </span>
+                            <v-spacer></v-spacer>
+                            <span class="cardText">
+                                <strong>Duration: </strong>
+                                {{ selectedEvent.duration }}
+                            </span>
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-btn text color="secondary" @click="selectedOpen = false">Close</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-menu>
+
             </v-col>
         </v-row>
     </v-container>
@@ -29,6 +60,13 @@
 import { mapGetters } from 'vuex'
 import { convertToDate, convertToLocalDate } from '../common/time'
     export default {
+        data: () => ({
+            selectedOpen: false,
+            selectedEvent: {},
+            selectedElement: null,
+            dialog: false
+        }),
+
         computed: {
             ...mapGetters({
                 currentEqs: 'getCurrentEqs'
@@ -57,7 +95,11 @@ import { convertToDate, convertToLocalDate } from '../common/time'
                         let event = {
                             name: `${localStartTime} ${eq.name} (${eq.duration})`,
                             start: localStartDate,
-                            colour: eventColour
+                            colour: eventColour,
+                            duration: eq.duration,
+                            localstarttime: localStartTime,
+                            eventName: eq.name,
+                            eventtype: eq.eventtype
                         }
                         events.push(event)
                     });
@@ -70,11 +112,29 @@ import { convertToDate, convertToLocalDate } from '../common/time'
         methods: {
             getEventColor(event) {
                 return event.colour
+            },
+            showEvent({nativeEvent, event}) {
+                const open = () => {
+                    this.selectedEvent = event;
+                    this.selectedElement = nativeEvent.target;
+                    setTimeout(() => (this.selectedOpen = true), 10);
+                };
+
+                if(this.selectedOpen) {
+                    this.selectedOpen = false;
+                    setTimeout(open, 10);
+                } else {
+                    open();
+                }
+
+                nativeEvent.stopPropagation();
             }
         }
     }
 </script>
 
 <style lang="scss" scoped>
-
+.cardText {
+    color: black;
+}
 </style>
