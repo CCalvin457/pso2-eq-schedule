@@ -14,8 +14,6 @@
                     type="custom-weekly"
                     :start="getCalendarDates.calendarStartDate"
                     :end="getCalendarDates.calendarEndDate"
-                    :short-weekdays="false"
-                    :short-months="false"
                     :events="getEvents"
                     :event-color="getEventColor"
                     color="light-blue"
@@ -89,11 +87,11 @@ import { convertToDate, convertToLocalDate } from '../common/time'
                 this.currentEqs.forEach(eqs => {
                     eqs.events.forEach(eq => {
                         let localDate = convertToLocalDate(eqs.date, eq.time)
-                        let localStartDate = localDate.clone().format('YYYY-MM-DD')
+                        let localStartDate = localDate.clone().format('YYYY-MM-DD hh:mm')
                         let localStartTime = localDate.clone().format('h:mm A')
                         let eventColour = eq.eventtype === 'Concert' ? '#0277BD' : '#43A047'
                         let event = {
-                            name: `${localStartTime} ${eq.name} (${eq.duration})`,
+                            name: `${eq.name} (${eq.duration})`,
                             start: localStartDate,
                             colour: eventColour,
                             duration: eq.duration,

@@ -70,9 +70,16 @@ export default {
     }),
 
     getNextEvent() {
-      let nextEvents = this.eqs.filter(eq => 
-        (moment(this.localTime, 'h:mm A').isBefore(moment(eq.startlocaltime, 'h:mm A'))) ||
-        (moment(this.localTime, 'h:mm A').isBefore(moment(eq.endlocaltime, 'h:mm A'))))
+      let localDateTime = moment(`${this.localDate} ${this.localTime}`, 'dddd, MMMM Do, YYYY h:mm A')
+
+      let nextEvents = this.eqs.filter(eq => {
+        let eventStartDateTime = moment(`${eq.startlocaldate} ${eq.startlocaltime}`, 'dddd, MMMM Do, YYYY h:mm A')
+        let duration = eq.duration.split(' ')[0]
+        let eventEndDateTime = eventStartDateTime.clone().add(duration, 'minutes')
+
+        return (localDateTime.isBefore(eventStartDateTime)) ||
+        (localDateTime.isBetween(eventStartDateTime, eventEndDateTime))
+      })
       
       if(nextEvents.length >= 1) {
         // console.log(nextEvents[0])

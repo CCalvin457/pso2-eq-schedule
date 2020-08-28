@@ -92,10 +92,6 @@ export default new Vuex.Store({
                 let temp = eq
 
                 let duration = eq.duration.split(" ")[0]
-
-                if(duration >= "60") {
-                    duration = "30"
-                }
                 
                 let localTime = convertToLocalTime(eq.time)
                 let endTime = localTime.clone().add(duration, 'minutes')
