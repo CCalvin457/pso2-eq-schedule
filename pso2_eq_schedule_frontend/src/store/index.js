@@ -71,7 +71,6 @@ export default new Vuex.Store({
 
     actions: {
         getLatestSchedule({commit, dispatch}) {
-            commit('UPDATE_IS_LOADED', false)
             return getLatestSchedule().then(async latestSchedule => {
                 commit('SET_CURRENT_EQ', latestSchedule)
                 let date = moment().format('M/DD')

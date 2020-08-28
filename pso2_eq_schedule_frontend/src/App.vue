@@ -22,6 +22,17 @@
 
     <v-main>
       <router-view v-if="isLoaded"/>
+      <!-- Loading circle -->
+      <v-container v-else fill-height fluid class="d-flex justify-center align-self-center">
+        <span>
+          <v-progress-circular
+            color="primary"
+            indeterminate
+            size="60"
+          ></v-progress-circular>
+        </span>
+      </v-container>
+      
     </v-main>
 
     <v-footer height="50px">
