@@ -86,13 +86,19 @@ import { convertToDate, convertToLocalDate } from '../common/time'
                 
                 this.currentEqs.forEach(eqs => {
                     eqs.events.forEach(eq => {
+                        let duration = eq.duration.split(' ')[0]
                         let localDate = convertToLocalDate(eqs.date, eq.time)
-                        let localStartDate = localDate.clone().format('YYYY-MM-DD hh:mm')
+
+                        let localStartDate = localDate.clone().format('YYYY-MM-DD HH:mm')
+                        let localEndDate = localDate.clone().add(duration, 'minutes').format('YYYY-MM-DD HH:mm')
+
                         let localStartTime = localDate.clone().format('h:mm A')
                         let eventColour = eq.eventtype === 'Concert' ? '#0277BD' : '#43A047'
+                        
                         let event = {
                             name: `${eq.name} (${eq.duration})`,
                             start: localStartDate,
+                            end: localEndDate,
                             colour: eventColour,
                             duration: eq.duration,
                             localstarttime: localStartTime,
