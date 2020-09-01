@@ -76,14 +76,14 @@ export default new Vuex.Store({
                 let date = moment().format('M/DD')
                 // let todaysEvents = latestSchedule.eqinfo.filter(item => item.date === date)
                 let eqs = await getEqsFromDateOnwards(date)
-                dispatch('setEqsList', eqs)
                 dispatch('setServerTimeZoneAbbr', latestSchedule.tzabbr)
+                dispatch('setEqsList', eqs)
                 dispatch('setLocalDateTime')
                 commit('UPDATE_IS_LOADED', true)
             })
         },
 
-        setEqsList({commit}, eqsList) {
+        setEqsList({commit, state}, eqsList) {
             let eqs = []
 
             // Adding the local starting and ending times based event time and duration
@@ -92,10 +92,10 @@ export default new Vuex.Store({
 
                 let duration = eq.duration.split(" ")[0]
                 
-                let localTime = convertToLocalTime(eq.time)
+                let localTime = convertToLocalTime(eq.time, state.serverTzAbbr)
                 let endTime = localTime.clone().add(duration, 'minutes')
 
-                let localDate = convertToLocalDate(eq.date, eq.time)
+                let localDate = convertToLocalDate(eq.date, eq.time, state.serverTzAbbr)
 
                 temp.startlocaldate = localDate.format('dddd, MMMM Do, YYYY')
                 temp.startlocaltime = localTime.format('h:mm A')
