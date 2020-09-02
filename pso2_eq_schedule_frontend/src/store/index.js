@@ -1,8 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { getLatestSchedule, getEqsFromDateOnwards } from '../common/api'
-import { convertToLocalTime, getLocalDateTime, convertToLocalDate } from '../common/time'
-import moment from 'moment'
+import { getLatestSchedule, getEqsAfterDate } from '../common/api'
+import { convertToLocalTime, getLocalTime, convertToLocalDate, getLocalDate, convertToDate } from '../common/time'
 
 Vue.use(Vuex)
 
@@ -72,10 +71,21 @@ export default new Vuex.Store({
     actions: {
         getLatestSchedule({commit, dispatch}) {
             return getLatestSchedule().then(async latestSchedule => {
+
+                // converting timestamps into dates
+                latestSchedule.eqinfo.forEach(data => {
+                    let date = new Date(data.date._seconds * 1000)
+
+                    data.date = convertToDate(`${date.getUTCMonth() + 1}/${date.getUTCDate()}`, 'M/D')
+                })
+
+                // console.log(latestSchedule.eqinfo)
                 commit('SET_CURRENT_EQ', latestSchedule)
-                let date = moment().format('M/DD')
-                // let todaysEvents = latestSchedule.eqinfo.filter(item => item.date === date)
-                let eqs = await getEqsFromDateOnwards(date)
+                // getting previous day
+                let date = new Date()
+                date.setDate(date.getDate() - 1)
+
+                let eqs = await getEqsAfterDate(date)
                 dispatch('setServerTimeZoneAbbr', latestSchedule.tzabbr)
                 dispatch('setEqsList', eqs)
                 dispatch('setLocalDateTime')
@@ -85,48 +95,49 @@ export default new Vuex.Store({
 
         setEqsList({commit, state}, eqsList) {
             let eqs = []
-
             // Adding the local starting and ending times based event time and duration
             eqsList.forEach(eq => {
                 let temp = eq
 
+                let eqDate = new Date(eq.date._seconds * 1000)
+                
                 let duration = eq.duration.split(" ")[0]
+                
                 
                 let localTime = convertToLocalTime(eq.time, state.serverTzAbbr)
                 let endTime = localTime.clone().add(duration, 'minutes')
 
-                let localDate = convertToLocalDate(eq.date, eq.time, state.serverTzAbbr)
-
+                let localDate = convertToLocalDate(`${eqDate.getUTCMonth() + 1}/${eqDate.getUTCDate()}`, eq.time, state.serverTzAbbr)
                 temp.startlocaldate = localDate.format('dddd, MMMM Do, YYYY')
                 temp.startlocaltime = localTime.format('h:mm A')
                 temp.endlocaltime = endTime.format('h:mm A')
                 
                 eqs.push(temp)
             });
-
             commit('SET_EQS_LIST', eqs)
         },
 
         setLocalDateTime({commit, state}) {
-            let localDateTime = getLocalDateTime();
-
-            if(state.currentLocalTime != localDateTime.time) {
-                commit('SET_LOCAL_TIME', localDateTime.time)
+            let localDate = getLocalDate()
+            let localTime = getLocalTime()
+            if(state.currentLocalTime != localTime) {
+                commit('SET_LOCAL_TIME', localTime)
             }
 
-            if(state.currentLocalDate != localDateTime.date) {
-                commit('SET_LOCAL_DATE', localDateTime.date)
+            if(state.currentLocalDate != localDate) {
+                commit('SET_LOCAL_DATE', localDate)
             }
 
             setInterval(() => {
-                let localDateTime = getLocalDateTime();
+                let localDate = getLocalDate()
+                let localTime = getLocalTime()
 
-                if(state.currentLocalTime != localDateTime.time) {
-                    commit('SET_LOCAL_TIME', localDateTime.time)
+                if(state.currentLocalTime != localTime) {
+                    commit('SET_LOCAL_TIME', localTime)
                 }
 
-                if(state.currentLocalDate != localDateTime.date) {
-                    commit('SET_LOCAL_DATE', localDateTime.date)
+                if(state.currentLocalDate != localDate) {
+                    commit('SET_LOCAL_DATE', localDate)
                 }
             }, 1000);
         },

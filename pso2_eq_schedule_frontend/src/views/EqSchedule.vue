@@ -56,7 +56,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { convertToDate, convertToLocalDate } from '../common/time'
+import { convertToLocalDate } from '../common/time'
     export default {
         data: () => ({
             selectedOpen: false,
@@ -67,13 +67,14 @@ import { convertToDate, convertToLocalDate } from '../common/time'
 
         computed: {
             ...mapGetters({
-                currentEqs: 'getCurrentEqs'
+                currentEqs: 'getCurrentEqs',
+                tzAbbr: 'getTzAbbr'
             }),
 
             getCalendarDates() {
                 let endIndex = this.currentEqs.length - 1;
-                let startDate = convertToDate(this.currentEqs[0].date, 'M/DD')
-                let endDate = convertToDate(this.currentEqs[endIndex].date, 'M/DD')
+                let startDate = this.currentEqs[0].date
+                let endDate = this.currentEqs[endIndex].date
 
                 return { calendarStartDate: startDate.clone().format('YYYY-MM-DD'),
                         calendarEndDate: endDate.clone().format('YYYY-MM-DD'),
@@ -86,15 +87,15 @@ import { convertToDate, convertToLocalDate } from '../common/time'
                 
                 this.currentEqs.forEach(eqs => {
                     eqs.events.forEach(eq => {
+                        let localDate = convertToLocalDate(`${eqs.date.month() + 1}/${eqs.date.date()}`, eq.time, this.tzAbbr)
                         let duration = eq.duration.split(' ')[0]
-                        let localDate = convertToLocalDate(eqs.date, eq.time)
 
                         let localStartDate = localDate.clone().format('YYYY-MM-DD HH:mm')
                         let localEndDate = localDate.clone().add(duration, 'minutes').format('YYYY-MM-DD HH:mm')
 
                         let localStartTime = localDate.clone().format('h:mm A')
                         let eventColour = eq.eventtype === 'Concert' ? '#0277BD' : '#43A047'
-                        
+
                         let event = {
                             name: `${eq.name} (${eq.duration})`,
                             start: localStartDate,

@@ -50,6 +50,7 @@ import DateInfo from '@/components/DateInfo.vue'
 import EqCard from '@/components/EqCard.vue'
 import { mapGetters } from 'vuex'
 import moment from 'moment'
+import { getLocalDateTime, convertToDateTime }  from '@/common/time.js'
 export default {
   name: 'Home',
   components: {
@@ -66,14 +67,16 @@ export default {
     ...mapGetters({
       eqs: 'getTodaysEqs',
       localTime: 'getLocalTime',
-      localDate: 'getLocalDate'
+      localDate: 'getLocalDate',
+      nextEvent: 'getNextEvent'
     }),
 
     getNextEvent() {
-      let localDateTime = moment(`${this.localDate} ${this.localTime}`, 'dddd, MMMM Do, YYYY h:mm A')
-
+      let localDateTime = getLocalDateTime()
+      // console.log(this.eqs)
       let nextEvents = this.eqs.filter(eq => {
-        let eventStartDateTime = moment(`${eq.startlocaldate} ${eq.startlocaltime}`, 'dddd, MMMM Do, YYYY h:mm A')
+        // console.log(eq)
+        let eventStartDateTime = convertToDateTime(`${eq.startlocaldate} ${eq.startlocaltime}`, 'dddd, MMMM Do, YYYY h:mm A')
         let duration = eq.duration.split(' ')[0]
         let eventEndDateTime = eventStartDateTime.clone().add(duration, 'minutes')
 
@@ -82,7 +85,7 @@ export default {
       })
       
       if(nextEvents.length >= 1) {
-        // console.log(nextEvents[0])
+        // console.log(nextEvents)
         return nextEvents[0]
       }
 
@@ -100,21 +103,15 @@ export default {
     },
 
     filteredEqs() {
-      // let localTime = moment(this.localTime, 'h:mm A')
-      // let localDate = moment(this.localDate, 'dddd, MMMM Do, YYYY')
-      let localDay = moment(`${this.localDate} ${this.localTime}`, 'dddd, MMMM Do, YYYY h:mm A')
+      let localDay = getLocalDateTime()
       let localNextDay = localDay.clone().add(1, 'days')
 
       // console.log(localNextDay)
 
       let nextEvents = this.eqs.filter(eq => {
-        // let eventStartTime = moment(eq.startlocaltime, 'h:mm A')
-        // let eventStartDate = moment(eq.startlocaldate, 'dddd, MMMM Do, YYYY')
-        let eventStartDateTime = moment(`${eq.startlocaldate} ${eq.startlocaltime}`, 'dddd, MMMM Do, YYYY h:mm A')
+        let eventStartDateTime = convertToDateTime(`${eq.startlocaldate} ${eq.startlocaltime}`, 'dddd, MMMM Do, YYYY h:mm A')
 
         return (
-          // localTime.isAfter(eventStartTime) && 
-          // localDate.isSame(eventStartDate)
           eventStartDateTime.isBetween(localDay, localNextDay)
         )
       }

@@ -17,11 +17,11 @@ export function convertToLocalTime(time, tzAbbr) {
 
 export function convertToLocalDate(date, time, tzAbbr) {
     var timeZone
-    var eqDate = moment.utc(`${date} ${time}`, 'M/DD h:mm A')
+    var eqDate = moment.utc(`${date} ${time}`, 'M/D h:mm A')
 
     if(tzAbbr != 'GMT') {
         timeZone = 'America/Los_Angeles'
-        eqDate = moment.tz(`${date} ${time}`, 'M/DD h:mm A', timeZone)
+        eqDate = moment.tz(`${date} ${time}`, 'M/D h:mm A', timeZone)
     }
 
     let localTimeZone = Moment.tz.guess()
@@ -48,9 +48,10 @@ export function getLocalDate() {
 export function getLocalDateTime() {
     let momentNow = moment();
 
-    let dateTime = {
-        time: momentNow.clone().format('h:mm A'),
-        date: momentNow.clone().format('dddd, MMMM Do, YYYY')
-    };
-    return dateTime;
+    return momentNow;
+}
+
+export function convertToDateTime(datetime, format) {
+    let momentDateTime = moment(datetime, format);
+    return momentDateTime;
 }
