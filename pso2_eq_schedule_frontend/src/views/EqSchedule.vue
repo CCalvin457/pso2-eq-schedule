@@ -67,8 +67,7 @@ import { convertToLocalDate } from '../common/time'
 
         computed: {
             ...mapGetters({
-                currentEqs: 'getCurrentEqs',
-                tzAbbr: 'getTzAbbr'
+                currentEqs: 'getCurrentEqs'
             }),
 
             getCalendarDates() {
@@ -84,16 +83,15 @@ import { convertToLocalDate } from '../common/time'
 
             getEvents() {
                 let events = []
-                
                 this.currentEqs.forEach(eqs => {
                     eqs.events.forEach(eq => {
-                        let localDate = convertToLocalDate(`${eqs.date.month() + 1}/${eqs.date.date()}`, eq.time, this.tzAbbr)
+                        let localDate = convertToLocalDate(eq.date._seconds * 1000)
                         let duration = eq.duration.split(' ')[0]
 
                         let localStartDate = localDate.clone().format('YYYY-MM-DD HH:mm')
                         let localEndDate = localDate.clone().add(duration, 'minutes').format('YYYY-MM-DD HH:mm')
 
-                        let localStartTime = localDate.clone().format('h:mm A')
+                        let localStartTime = localDate.clone().format('hh:mm A')
                         let eventColour = eq.eventtype === 'Concert' ? '#0277BD' : '#43A047'
 
                         let event = {

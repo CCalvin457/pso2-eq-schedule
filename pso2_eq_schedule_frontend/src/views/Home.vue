@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <DateInfo :localTime="localTime" :localDate="localDate"></DateInfo>
+    <DateInfo :localDate="localDateTime"></DateInfo>
     <v-container>
       <template v-if="filteredEqs">
         <v-row class="pb-4">
@@ -49,8 +49,7 @@
 import DateInfo from '@/components/DateInfo.vue'
 import EqCard from '@/components/EqCard.vue'
 import { mapGetters } from 'vuex'
-import moment from 'moment'
-import { getLocalDateTime, convertToDateTime }  from '@/common/time.js'
+import { getLocalDateTime }  from '@/common/time.js'
 export default {
   name: 'Home',
   components: {
@@ -66,9 +65,8 @@ export default {
   computed: {
     ...mapGetters({
       eqs: 'getTodaysEqs',
-      localTime: 'getLocalTime',
-      localDate: 'getLocalDate',
-      nextEvent: 'getNextEvent'
+      nextEvent: 'getNextEvent',
+      localDateTime: 'getLocalDateTime'
     }),
 
     getNextEvent() {
@@ -76,7 +74,7 @@ export default {
       // console.log(this.eqs)
       let nextEvents = this.eqs.filter(eq => {
         // console.log(eq)
-        let eventStartDateTime = convertToDateTime(`${eq.startlocaldate} ${eq.startlocaltime}`, 'dddd, MMMM Do, YYYY h:mm A')
+        let eventStartDateTime = eq.localDate
         let duration = eq.duration.split(' ')[0]
         let eventEndDateTime = eventStartDateTime.clone().add(duration, 'minutes')
 
@@ -99,7 +97,7 @@ export default {
         return true
       }
       // console.log(`Upcoming event: ${moment(this.localTime, 'h:mm A').isBefore(moment(this.getNextEvent.startlocaltime, 'h:mm A'))}`)
-      return moment(this.localTime, 'h:mm A').isBefore(moment(this.getNextEvent.startlocaltime, 'h:mm A'))
+      return this.localDateTime.isBefore(this.getNextEvent.localDate)
     },
 
     filteredEqs() {
@@ -109,7 +107,7 @@ export default {
       // console.log(localNextDay)
 
       let nextEvents = this.eqs.filter(eq => {
-        let eventStartDateTime = convertToDateTime(`${eq.startlocaldate} ${eq.startlocaltime}`, 'dddd, MMMM Do, YYYY h:mm A')
+        let eventStartDateTime = eq.localDate
 
         return (
           eventStartDateTime.isBetween(localDay, localNextDay)

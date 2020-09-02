@@ -20,7 +20,7 @@
                 <v-row>
                     <v-col cols="6">
                         <div class="text-center text-body-1"><strong>Start Time:</strong></div>
-                        <p class="text-center text-body-1">{{ event.time }} {{ tzAbbr }} <!-- Eq time --></p>
+                        <p class="text-center text-body-1">{{ event.time }} UTC <!-- Eq time --></p>
                     </v-col>
                     <v-col cols="6">
                         <div class="text-center text-body-1"><strong>Local Start Time:</strong></div>
@@ -39,16 +39,9 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
     export default {
         props: {
             event: {}
-        },
-
-        computed: {
-            ...mapGetters({
-                tzAbbr: 'getTzAbbr'
-            })
         }
     }
 </script>

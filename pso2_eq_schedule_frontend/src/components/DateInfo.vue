@@ -3,11 +3,11 @@
         <v-row align="center" justify="center">
             <!-- local time -->
             <v-col cols="12">
-                <p class="text-center text-h3 timeInfo">{{ localTime }}</p>
+                <p class="text-center text-h3 timeInfo">{{ currentTime }}</p>
             </v-col>
             <!-- local date -->
             <v-col class="removePadding" cols="12">
-                <p class="text-center text-h5 timeInfo">{{ localDate }}</p>
+                <p class="text-center text-h5 timeInfo">{{ currentDate }}</p>
             </v-col>
             <!-- timezone -->
             <v-col class="removePadding" cols="12">
@@ -22,8 +22,7 @@ import moment from 'moment';
 import Moment from 'moment-timezone';
     export default {
         props: {
-            localTime: String,
-            localDate: String
+            localDate: Object
         },
         data() {
             return {
@@ -33,6 +32,16 @@ import Moment from 'moment-timezone';
 
         created() {
             this.getLocalTimeZone();
+        },
+
+        computed: {
+            currentTime() {
+                return this.localDate.clone().format('hh:mm A')
+            },
+
+            currentDate() {
+                return this.localDate.clone().format('dddd, MMMM Do, YYYY')
+            }
         },
 
         methods: {

@@ -49,7 +49,7 @@ module.exports = (app, db) => {
         console.log(datenow)
         
         try {
-            eqDocs = await db.collection('all eqs').where('date', '>', datenow).get();
+            eqDocs = await db.collection('all eqs').where('date', '>=', datenow).get();
         } catch(error) {
             return res.status(403).send('Permission denied')
         }
@@ -59,12 +59,8 @@ module.exports = (app, db) => {
         }
 
         eqDocs.forEach(doc => {
-            console.log(doc.data().date)
-            doc.data().events.forEach(event => {
-                let temp = event;
-                temp.date = doc.data().date
-                eqs.push(temp);
-            });
+            // console.log(doc.data())
+            eqs.push(doc.data())
         });
 
         return res.status(200).send(eqs)

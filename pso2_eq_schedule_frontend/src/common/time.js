@@ -1,28 +1,17 @@
 import moment from 'moment'
 import Moment from 'moment-timezone'
 
-export function convertToLocalTime(time, tzAbbr) {
-    var timeZone
+export function convertToLocalTime(time) {
     var eqTime = moment.utc(time, 'h:mm A')
-    if(tzAbbr != 'GMT') {
-        timeZone = 'America/Los_Angeles' // Find way to not hard code this
-        eqTime = moment.tz(time, 'h:mm A', timeZone)
-    }
-    
+
     let localTimeZone = Moment.tz.guess() // Put in vuex store?
     let localTime = eqTime.clone().tz(localTimeZone)
     
     return localTime
 }
 
-export function convertToLocalDate(date, time, tzAbbr) {
-    var timeZone
-    var eqDate = moment.utc(`${date} ${time}`, 'M/D h:mm A')
-
-    if(tzAbbr != 'GMT') {
-        timeZone = 'America/Los_Angeles'
-        eqDate = moment.tz(`${date} ${time}`, 'M/D h:mm A', timeZone)
-    }
+export function convertToLocalDate(date) {
+    var eqDate = moment.utc(date)
 
     let localTimeZone = Moment.tz.guess()
     let localDate = eqDate.clone().tz(localTimeZone)
@@ -31,8 +20,8 @@ export function convertToLocalDate(date, time, tzAbbr) {
     
 }
 
-export function convertToDate(date, dateFormat) {
-    let convDate = moment(date, dateFormat)
+export function convertToDate(date, format) {
+    let convDate = moment.utc(date, format)
 
     return convDate
 }
