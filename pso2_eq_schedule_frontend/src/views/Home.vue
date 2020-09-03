@@ -49,7 +49,7 @@
 import DateInfo from '@/components/DateInfo.vue'
 import EqCard from '@/components/EqCard.vue'
 import { mapGetters } from 'vuex'
-import { getLocalDateTime }  from '@/common/time.js'
+// import { getLocalDateTime }  from '@/common/time.js'
 export default {
   name: 'Home',
   components: {
@@ -70,8 +70,7 @@ export default {
     }),
 
     getNextEvent() {
-      let localDateTime = getLocalDateTime()
-      // console.log(this.eqs)
+      let localDateTime = this.localDateTime
       let nextEvents = this.eqs.filter(eq => {
         // console.log(eq)
         let eventStartDateTime = eq.localDate
@@ -101,7 +100,7 @@ export default {
     },
 
     filteredEqs() {
-      let localDay = getLocalDateTime()
+      let localDay = this.localDateTime
       let localNextDay = localDay.clone().add(1, 'days')
 
       // console.log(localNextDay)

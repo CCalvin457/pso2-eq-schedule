@@ -81,6 +81,7 @@ export default new Vuex.Store({
                 commit('SET_CURRENT_EQ', latestSchedule)
                 // getting previous day
                 let date = new Date()
+                date.setHours(0, 0, 0, 0)
                 // date.setDate(date.getDate() - 1)
                 // console.log(date)
                 let eqs = await getEqsAfterDate(date)
@@ -126,7 +127,7 @@ export default new Vuex.Store({
                 if(state.currentDateTime != localDateTime) {
                     commit('SET_LOCAL_DATE_TIME', localDateTime)
                 }
-            }, 1000);
+            }, 2500);
         }
     }
 })
