@@ -67,11 +67,11 @@ export default {
     this.oldLocalDate = getLocalDate()
     
     this.unsubscribe = this.$store.subscribe((mutation, state) => {
-      if(mutation.type === 'SET_LOCAL_DATE') {
+      if(mutation.type === 'SET_LOCAL_DATE_TIME') {
         // console.log(this.oldLocalDate)
-          if(state.currentLocalDate != '' && this.oldLocalDate != state.currentLocalDate) {
+          if(state.localDateTime.date != '' && this.oldLocalDate != state.localDateTime.date) {
             this.$store.dispatch('getLatestSchedule')
-            this.oldLocalDate = state.currentLocalDate
+            this.oldLocalDate = state.localDateTime.date
           }
       }
     });

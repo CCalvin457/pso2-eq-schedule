@@ -50,6 +50,7 @@ import DateInfo from '@/components/DateInfo.vue'
 import EqCard from '@/components/EqCard.vue'
 import { mapGetters } from 'vuex'
 // import { getLocalDateTime }  from '@/common/time.js'
+import { convertToDateTime } from '@/common/time.js'
 export default {
   name: 'Home',
   components: {
@@ -70,7 +71,7 @@ export default {
     }),
 
     getNextEvent() {
-      let localDateTime = this.localDateTime
+      let localDateTime = convertToDateTime(`${this.localDateTime.date} ${this.localDateTime.time}`, 'dddd, MMMM Do, YYYY h:mm A')
       let nextEvents = this.eqs.filter(eq => {
         // console.log(eq)
         let eventStartDateTime = eq.localDate
@@ -96,11 +97,12 @@ export default {
         return true
       }
       // console.log(`Upcoming event: ${moment(this.localTime, 'h:mm A').isBefore(moment(this.getNextEvent.startlocaltime, 'h:mm A'))}`)
-      return this.localDateTime.isBefore(this.getNextEvent.localDate)
+      let localDateTime = convertToDateTime(`${this.localDateTime.date} ${this.localDateTime.time}`, 'dddd, MMMM Do, YYYY h:mm A')
+      return localDateTime.isBefore(this.getNextEvent.localDate)
     },
 
     filteredEqs() {
-      let localDay = this.localDateTime
+      let localDay = convertToDateTime(`${this.localDateTime.date} ${this.localDateTime.time}`, 'dddd, MMMM Do, YYYY h:mm A')
       let localNextDay = localDay.clone().add(1, 'days')
 
       // console.log(localNextDay)

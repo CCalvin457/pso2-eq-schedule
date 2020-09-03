@@ -3,11 +3,11 @@
         <v-row align="center" justify="center">
             <!-- local time -->
             <v-col cols="12">
-                <p class="text-center text-h3 timeInfo">{{ currentTime }}</p>
+                <p class="text-center text-h3 timeInfo">{{ localDate.time }}</p>
             </v-col>
             <!-- local date -->
             <v-col class="removePadding" cols="12">
-                <p class="text-center text-h5 timeInfo">{{ currentDate }}</p>
+                <p class="text-center text-h5 timeInfo">{{ localDate.date }}</p>
             </v-col>
             <!-- timezone -->
             <v-col class="removePadding" cols="12">

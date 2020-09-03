@@ -10,9 +10,7 @@ export default new Vuex.Store({
         currentEq: Object, // latest eq schedule
         allEqs: [], // all eq schedules
         todaysEq: [], // eqs for today
-        currentLocalTime: '',
-        currentLocalDate: '',
-        localDateTime: Object,
+        localDateTime: Object, // local date and time
         isLoaded: false
     },
 
@@ -23,14 +21,6 @@ export default new Vuex.Store({
          
         getTodaysEqs(state) {
             return state.todaysEq
-        },
-
-        getLocalTime(state) {
-            return state.currentLocalTime
-        },
-
-        getLocalDate(state) {
-            return state.currentLocalDate
         },
 
         getIsLoaded(state) {
@@ -49,14 +39,6 @@ export default new Vuex.Store({
 
         SET_EQS_LIST(state, todaysEqs) {
             state.todaysEq = todaysEqs
-        },
-
-        SET_LOCAL_TIME(state, time) {            
-            state.currentLocalTime = time            
-        },
-
-        SET_LOCAL_DATE(state, date) {            
-            state.currentLocalDate = date            
         },
 
         SET_LOCAL_DATE_TIME(state, datetime) {
@@ -117,15 +99,27 @@ export default new Vuex.Store({
         setLocalDateTime({commit, state}) {
             let localDateTime = getLocalDateTime()
 
-            if(state.currentDateTime != localDateTime) {
-                commit('SET_LOCAL_DATE_TIME', localDateTime)
+            let dateObj = {
+                date: localDateTime.clone().format('dddd, MMMM Do, YYYY'),
+                time: localDateTime.clone().format('hh:mm A')
+            }
+
+            if(state.localDateTime === undefined || state.localDateTime.date != dateObj.date ||
+                state.localDateTime.time != dateObj.time) {
+                commit('SET_LOCAL_DATE_TIME', dateObj)
             }
             
             setInterval(() => {
                 let localDateTime = getLocalDateTime()
 
-                if(state.currentDateTime != localDateTime) {
-                    commit('SET_LOCAL_DATE_TIME', localDateTime)
+                let dateObj = {
+                    date: localDateTime.clone().format('dddd, MMMM Do, YYYY'),
+                    time: localDateTime.clone().format('hh:mm A')
+                }
+
+                if(state.localDateTime === undefined || state.localDateTime.date != dateObj.date ||
+                    state.localDateTime.time != dateObj.time) {
+                    commit('SET_LOCAL_DATE_TIME', dateObj)
                 }
             }, 2500);
         }
