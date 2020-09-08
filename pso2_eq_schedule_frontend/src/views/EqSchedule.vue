@@ -16,6 +16,7 @@
                     :end="getCalendarDates.calendarEndDate"
                     :events="getEvents"
                     :event-color="getEventColor"
+                    :event-more="false"
                     color="light-blue"
                     @click:event="(nativeEvent, event)=>showEvent(nativeEvent, event)"
                 ></v-calendar>
