@@ -6,6 +6,7 @@ module.exports = (app, api) => {
 
         try {
             do {
+                /* eslint-disable no-await-in-loop */
                 let curEvents = await api.events.list({calendarId: calendarId, pageToken: pageToken})
                 if(curEvents.status != 200) {
                     return res.status(curEvents.status).send(curEvents.statusText)
@@ -20,7 +21,7 @@ module.exports = (app, api) => {
             
         } catch(err) {
             console.log(err)
-            return res.status(403).send('Permission denied');
+            return res.status(403).send('Something went wrong!');
         }
         return res.status(200).send(events)
     })

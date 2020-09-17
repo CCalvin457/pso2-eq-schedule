@@ -1,5 +1,5 @@
 const { google } = require('googleapis');
-const serviceAccount = '../../pso2-eq-dev-calendar.json';
+const serviceAccount = '../../pso2-eq-information-dev.json';
 
 const SCOPE = 'https://www.googleapis.com/auth/calendar';
 
