@@ -65,25 +65,19 @@ export default {
 
   computed: {
     ...mapGetters({
-      eqs: 'getTodaysEqs',
-      nextEvent: 'getNextEvent',
+      eventList: 'getEventList',
       localDateTime: 'getLocalDateTime'
     }),
 
     getNextEvent() {
       let localDateTime = convertToDateTime(`${this.localDateTime.date} ${this.localDateTime.time}`, 'dddd, MMMM Do, YYYY h:mm A')
-      let nextEvents = this.eqs.filter(eq => {
-        // console.log(eq)
-        let eventStartDateTime = eq.localDate
-        let duration = eq.duration.split(' ')[0]
-        let eventEndDateTime = eventStartDateTime.clone().add(duration, 'minutes')
-
-        return (localDateTime.isBefore(eventStartDateTime)) ||
-        (localDateTime.isBetween(eventStartDateTime, eventEndDateTime))
+      let nextEvents = this.eventList.filter(event => {
+        
+        return (localDateTime.isBefore(event.startTime)) ||
+        (localDateTime.isBetween(event.startTime, event.endTime))
       })
       
       if(nextEvents.length >= 1) {
-        // console.log(nextEvents)
         return nextEvents[0]
       }
 
@@ -96,7 +90,7 @@ export default {
         // console.log(`No upcoming event`);
         return true
       }
-      // console.log(`Upcoming event: ${moment(this.localTime, 'h:mm A').isBefore(moment(this.getNextEvent.startlocaltime, 'h:mm A'))}`)
+      
       let localDateTime = convertToDateTime(`${this.localDateTime.date} ${this.localDateTime.time}`, 'dddd, MMMM Do, YYYY h:mm A')
       return localDateTime.isBefore(this.getNextEvent.localDate)
     },
@@ -107,15 +101,7 @@ export default {
 
       // console.log(localNextDay)
 
-      let nextEvents = this.eqs.filter(eq => {
-        let eventStartDateTime = eq.localDate
-
-        return (
-          eventStartDateTime.isBetween(localDay, localNextDay)
-        )
-      }
-        
-      );
+      let nextEvents = this.eventList.filter(event => event.startTime.isBetween(localDay, localNextDay));
 
       if(nextEvents.length >= 1) {
           // console.log(nextEvents)

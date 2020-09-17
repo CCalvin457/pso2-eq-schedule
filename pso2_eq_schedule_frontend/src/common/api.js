@@ -24,3 +24,16 @@ export async function getEqsAfterDate(date) {
 
     return eqs.data;
 }
+
+export async function getCalendarEvents() {
+    let events = Object;
+
+    try {
+        events = await axios.get(`${process.env.VUE_APP_API}/calendar`)
+    } catch(error) {
+        console.log(error);
+        return;
+    }
+
+    return events.data;
+}

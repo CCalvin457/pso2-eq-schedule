@@ -1,14 +1,16 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { getLatestSchedule, getEqsAfterDate } from '../common/api'
-import { convertToLocalDate, convertToDate, getLocalDateTime } from '../common/time'
-// import { compare } from '../common/helper'
+// import { getLatestSchedule, getEqsAfterDate, getCalendarEvents } from '../common/api'
+// import { convertToLocalDate, convertToDate, getLocalDateTime } from '../common/time'
+import { getCalendarEvents } from '../common/api'
+import { convertToLocalDate, getLocalDateTime, convertToMomentDate } from '../common/time'
+import { compareDates } from '../common/helper'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
         currentEq: Object, // latest eq schedule
-        allEqs: [], // all eq schedules
+        allEvents: [], // all eq schedules
         todaysEq: [], // eqs for today
         localDateTime: Object, // local date and time
         isLoaded: false
@@ -21,6 +23,10 @@ export default new Vuex.Store({
          
         getTodaysEqs(state) {
             return state.todaysEq
+        },
+
+        getEventList(state) {
+            return state.allEvents
         },
 
         getIsLoaded(state) {
@@ -41,6 +47,10 @@ export default new Vuex.Store({
             state.todaysEq = todaysEqs
         },
 
+        SET_EVENT_LIST(state, events) {
+            state.allEvents = events
+        },
+
         SET_LOCAL_DATE_TIME(state, datetime) {
             state.localDateTime = datetime
         },
@@ -52,25 +62,55 @@ export default new Vuex.Store({
 
     actions: {
         getLatestSchedule({commit, dispatch}) {
-            return getLatestSchedule().then(async latestSchedule => {
+            return getCalendarEvents().then(calendarEvents => {
+                let events = [];
+                calendarEvents.forEach(event => {
+                    let eventName = event.summary;
+                    let serverStartTime = new Date(event.start.dateTime);
+                    let serverEndTime = new Date(event.end.dateTime);
+                    let duration = (serverEndTime - serverStartTime) / 60e3
 
-                // converting timestamps into dates
-                latestSchedule.eqinfo.forEach(data => {
-                    data.date = convertToDate(data.date, 'YYYY/M/D')
+                    serverStartTime = convertToMomentDate(serverStartTime)
+                    serverEndTime = convertToMomentDate(serverEndTime)
+                    
+                    let tempEventObj = {
+                        name: eventName,
+                        eventtype: eventName.toLowerCase().includes('concert') ? 'Concert' : 'Urgent Quest',
+                        startTime: serverStartTime,
+                        endTime: serverEndTime,
+                        duration: `${duration} minutes`,
+                        description: event.description
+                    }
+
+                    events.push(tempEventObj)
                 })
 
-                // console.log(latestSchedule.eqinfo)
-                commit('SET_CURRENT_EQ', latestSchedule)
-                // getting previous day
-                let date = new Date()
-                date.setHours(0, 0, 0, 0)
-                // date.setDate(date.getDate() - 1)
-                // console.log(date)
-                let eqs = await getEqsAfterDate(date)
-                dispatch('setEqsList', eqs)
+                // console.log(events)
+                events.sort((a, b) => compareDates(a, b))
+                console.log(events)
+                commit('SET_EVENT_LIST', events)
                 dispatch('setLocalDateTime')
                 commit('UPDATE_IS_LOADED', true)
             })
+            // return getLatestSchedule().then(async latestSchedule => {
+
+            //     // converting timestamps into dates
+            //     latestSchedule.eqinfo.forEach(data => {
+            //         data.date = convertToDate(data.date, 'YYYY/M/D')
+            //     })
+
+            //     // console.log(latestSchedule.eqinfo)
+            //     commit('SET_CURRENT_EQ', latestSchedule)
+            //     // getting previous day
+            //     let date = new Date()
+            //     date.setHours(0, 0, 0, 0)
+            //     // date.setDate(date.getDate() - 1)
+            //     // console.log(date)
+            //     let eqs = await getEqsAfterDate(date)
+            //     dispatch('setEqsList', eqs)
+            //     dispatch('setLocalDateTime')
+            //     commit('UPDATE_IS_LOADED', true)
+            // })
         },
 
         setEqsList({commit}, eqsList) {

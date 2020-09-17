@@ -44,3 +44,7 @@ export function convertToDateTime(datetime, format) {
     let momentDateTime = moment(datetime, format);
     return momentDateTime;
 }
+
+export function convertToMomentDate(date) {
+    return moment(date);
+}

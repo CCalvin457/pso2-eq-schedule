@@ -11,7 +11,6 @@ module.exports = (app, api) => {
                     return res.status(curEvents.status).send(curEvents.statusText)
                 }
                 pageToken = curEvents.data.nextPageToken
-                // console.log(curEvents)
 
                 curEvents.data.items.forEach(item => {
                     events.push(item)
@@ -23,7 +22,6 @@ module.exports = (app, api) => {
             console.log(err)
             return res.status(403).send('Permission denied');
         }
-        console.log(events.length)
         return res.status(200).send(events)
     })
 }

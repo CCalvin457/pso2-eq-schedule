@@ -13,18 +13,18 @@
             :style="[event.eventtype === 'Urgent Quest' ? {'color': 'Red'} : { 'color': ' LightBlue'}]">
                 {{ event.eventtype }} <!-- Eq eventtype -->
             </p>
-            <p class="text-center text-h6">{{ event.startlocaldate }}</p>
+            <p class="text-center text-h6">{{ getDate }}</p>
         </v-card-subtitle>
         <v-card-text>
             <v-container fluid>
                 <v-row>
                     <v-col cols="6">
                         <div class="text-center text-body-1"><strong>Start Time:</strong></div>
-                        <p class="text-center text-body-1">{{ event.time }} UTC <!-- Eq time --></p>
+                        <p class="text-center text-body-1">{{ getStartTime }} <!-- event start time --></p>
                     </v-col>
                     <v-col cols="6">
-                        <div class="text-center text-body-1"><strong>Local Start Time:</strong></div>
-                        <p class="text-center text-body-1">{{ event.startlocaltime }} <!-- Eq local time --></p>
+                        <div class="text-center text-body-1"><strong>End Time:</strong></div>
+                        <p class="text-center text-body-1">{{ getEndTime }} <!-- event end time --></p>
                     </v-col>
                 </v-row>
                 <v-row>
@@ -42,6 +42,20 @@
     export default {
         props: {
             event: {}
+        },
+
+        computed: {
+            getStartTime() {
+                return this.event.startTime.clone().format('h:mm A');
+            },
+
+            getEndTime() {
+                return this.event.endTime.clone().format('h:mm A');
+            },
+
+            getDate() {
+                return this.event.startTime.clone().format('dddd, MMMM Do, YYYY')
+            }
         }
     }
 </script>
