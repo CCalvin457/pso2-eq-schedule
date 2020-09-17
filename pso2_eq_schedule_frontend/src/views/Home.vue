@@ -72,7 +72,7 @@ export default {
     getNextEvent() {
       let localDateTime = convertToDateTime(`${this.localDateTime.date} ${this.localDateTime.time}`, 'dddd, MMMM Do, YYYY h:mm A')
       let nextEvents = this.eventList.filter(event => {
-        
+
         return (localDateTime.isBefore(event.startTime)) ||
         (localDateTime.isBetween(event.startTime, event.endTime))
       })
@@ -92,7 +92,7 @@ export default {
       }
       
       let localDateTime = convertToDateTime(`${this.localDateTime.date} ${this.localDateTime.time}`, 'dddd, MMMM Do, YYYY h:mm A')
-      return localDateTime.isBefore(this.getNextEvent.localDate)
+      return localDateTime.isBefore(this.getNextEvent.startTime)
     },
 
     filteredEqs() {
