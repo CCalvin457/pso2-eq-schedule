@@ -125,7 +125,6 @@ import { mapGetters } from 'vuex'
 
             getEvents() {
                 let events = []
-                console.log(this.eventList.length)
                 this.eventList.forEach(event => {
                     let startDate = event.startTime.clone().format('YYYY-MM-DD HH:mm')
                     let endDate = event.endTime.clone().format('YYYY-MM-DD HH:mm')
