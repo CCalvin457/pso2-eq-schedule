@@ -72,7 +72,7 @@ export default new Vuex.Store({
 
                     serverStartTime = convertToMomentDate(serverStartTime)
                     serverEndTime = convertToMomentDate(serverEndTime)
-                    
+
                     let tempEventObj = {
                         name: eventName,
                         eventtype: eventName.toLowerCase().includes('concert') ? 'Concert' : 'Urgent Quest',
@@ -87,7 +87,7 @@ export default new Vuex.Store({
 
                 // console.log(events)
                 events.sort((a, b) => compareDates(a, b))
-                console.log(events)
+                // console.log(events)
                 commit('SET_EVENT_LIST', events)
                 dispatch('setLocalDateTime')
                 commit('UPDATE_IS_LOADED', true)
