@@ -1,55 +1,95 @@
 <template>
     <v-container fluid>
         <v-row>
-            <v-col cols="12">
-                <p class="text-center text-h4">EQ Schedule From:</p>
-                <p class="text-center text-h4">
-                    {{ getCalendarDates.displayStartDate }} to {{ getCalendarDates.displayEndDate }}
-                </p>
-            </v-col>
-        </v-row>
-        <v-row>
-            <v-col cols="12">
-                <v-calendar 
-                    type="custom-weekly"
-                    :start="getCalendarDates.calendarStartDate"
-                    :end="getCalendarDates.calendarEndDate"
-                    :events="getEvents"
-                    :event-color="getEventColor"
-                    :event-more="false"
-                    color="light-blue"
-                    @click:event="(nativeEvent, event)=>showEvent(nativeEvent, event)"
-                ></v-calendar>
+            <v-col>
+                <v-sheet height="64">
+                    <v-toolbar flat>
+                    <v-btn outlined class="mr-4" @click="setToday">
+                        Today
+                    </v-btn>
+                    <v-btn fab text small @click="prev">
+                        <v-icon small>mdi-chevron-left</v-icon>
+                    </v-btn>
+                    <v-btn fab text small @click="next">
+                        <v-icon small>mdi-chevron-right</v-icon>
+                    </v-btn>
+                    <v-toolbar-title v-if="refCalendar">
+                        {{ $refs.calendar.title }}
+                    </v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-menu bottom right>
+                        <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                            outlined
+                            v-bind="attrs"
+                            v-on="on"
+                        >
+                            <span>{{ typeToLabel[type] }}</span>
+                            <v-icon right>mdi-menu-down</v-icon>
+                        </v-btn>
+                        </template>
+                        <v-list>
+                        <v-list-item @click="type = 'day'">
+                            <v-list-item-title>Day</v-list-item-title>
+                        </v-list-item>
+                        <v-list-item @click="type = 'week'">
+                            <v-list-item-title>Week</v-list-item-title>
+                        </v-list-item>
+                        <v-list-item @click="type = 'month'">
+                            <v-list-item-title>Month</v-list-item-title>
+                        </v-list-item>
+                        <v-list-item @click="type = '4day'">
+                            <v-list-item-title>4 days</v-list-item-title>
+                        </v-list-item>
+                        </v-list>
+                    </v-menu>
+                    </v-toolbar>
+                </v-sheet>
+                <v-sheet>
+                    <v-calendar 
+                        ref="calendar"
+                        v-model="focus"
+                        :type="type"
+                        :events="getEvents"
+                        :event-color="getEventColor"
+                        color="light-blue"
+                        @click:event="showEvent"
+                        @click:more="viewDay"
+                        @click:date="viewDay"
+                    ></v-calendar>
 
-                <v-menu
-                    v-model="selectedOpen"
-                    :close-on-content-click="false"
-                    :activator="selectedElement"
-                    offset-x
-                >
-                    <v-card color="grey lighten-4" min-width="350px" flat>
-                        <v-toolbar :color="selectedEvent.colour">
-                            <v-toolbar-title>
-                                <span>{{ selectedEvent.eventName }} ({{ selectedEvent.eventtype }})</span>
-                            </v-toolbar-title>
-                        </v-toolbar>
-                        <v-card-text>
-                            <span class="cardText">
-                                <strong>Local Start Time: </strong>
-                                {{ selectedEvent.localstarttime }}
-                            </span>
-                            <v-spacer></v-spacer>
-                            <span class="cardText">
-                                <strong>Duration: </strong>
-                                {{ selectedEvent.duration }}
-                            </span>
-                        </v-card-text>
-                        <v-card-actions>
-                            <v-btn text color="secondary" @click="selectedOpen = false">Close</v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </v-menu>
-
+                    <v-menu
+                        v-model="selectedOpen"
+                        :close-on-content-click="false"
+                        :activator="selectedElement"
+                        offset-x
+                    >
+                        <v-card color="grey lighten-4" min-width="350px" flat>
+                            <v-toolbar :color="selectedEvent.colour">
+                                <v-toolbar-title>
+                                    <span>{{ selectedEvent.eventName }} ({{ selectedEvent.eventtype }})</span>
+                                </v-toolbar-title>
+                            </v-toolbar>
+                            <v-card-text>
+                                <span class="cardText">
+                                    <strong>Start Time: </strong>
+                                    {{ selectedEvent.startTime }}
+                                </span>
+                                <v-spacer></v-spacer>
+                                <span class="cardText">
+                                    <strong>Duration: </strong>
+                                    {{ selectedEvent.duration }}
+                                </span>
+                                <v-spacer></v-spacer>
+                                <span class="cardText" v-html="selectedEvent.description">                                    
+                                </span>
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-btn text color="secondary" @click="selectedOpen = false">Close</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-menu>
+                </v-sheet>
             </v-col>
         </v-row>
     </v-container>
@@ -57,56 +97,56 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { convertToLocalDate } from '../common/time'
     export default {
         data: () => ({
+            refCalendar: false,
+            focus: '',
+            type: 'month',
+            typeToLabel: {
+                month: 'Month',
+                week: 'Week',
+                day: 'Day',
+                '4day': '4 Days',
+            },
             selectedOpen: false,
             selectedEvent: {},
             selectedElement: null,
             dialog: false
         }),
 
+        mounted () {
+            this.$refs.calendar.title != undefined ? this.refCalendar = true : this.refCalendar = false
+        },
+
         computed: {
             ...mapGetters({
-                currentEqs: 'getCurrentEqs'
+                eventList: 'getEventList'
             }),
-
-            getCalendarDates() {
-                let endIndex = this.currentEqs.length - 1;
-                let startDate = this.currentEqs[0].date
-                let endDate = this.currentEqs[endIndex].date
-
-                return { calendarStartDate: startDate.clone().format('YYYY-MM-DD'),
-                        calendarEndDate: endDate.clone().format('YYYY-MM-DD'),
-                        displayStartDate: startDate.clone().format('dddd, MMMM Do, YYYY'),
-                        displayEndDate: endDate.clone().format('dddd, MMMM Do, YYYY')}
-            },
 
             getEvents() {
                 let events = []
-                this.currentEqs.forEach(eqs => {
-                    eqs.events.forEach(eq => {
-                        let localDate = convertToLocalDate(eq.date._seconds * 1000)
-                        let duration = eq.duration.split(' ')[0]
+                console.log(this.eventList.length)
+                this.eventList.forEach(event => {
+                    let startDate = event.startTime.clone().format('YYYY-MM-DD HH:mm')
+                    let endDate = event.endTime.clone().format('YYYY-MM-DD HH:mm')
+                    let startTime = event.startTime.clone().format('h:mm A')
+                    let endTime = event.endTime.clone().format('h:mm A')
+                    
+                    let eventColour = event.eventtype === 'Concert' ? '#0277BD' : '#43A047'
 
-                        let localStartDate = localDate.clone().format('YYYY-MM-DD HH:mm')
-                        let localEndDate = localDate.clone().add(duration, 'minutes').format('YYYY-MM-DD HH:mm')
-
-                        let localStartTime = localDate.clone().format('hh:mm A')
-                        let eventColour = eq.eventtype === 'Concert' ? '#0277BD' : '#43A047'
-
-                        let event = {
-                            name: `${eq.name} (${eq.duration})`,
-                            start: localStartDate,
-                            end: localEndDate,
-                            colour: eventColour,
-                            duration: eq.duration,
-                            localstarttime: localStartTime,
-                            eventName: eq.name,
-                            eventtype: eq.eventtype
-                        }
-                        events.push(event)
-                    });
+                    let eventObj = {
+                        name: `${event.name} (${event.duration})`,
+                        start: startDate,
+                        end: endDate,
+                        colour: eventColour,
+                        duration: event.duration,
+                        startTime: startTime,
+                        endTime: endTime,
+                        description: event.description,
+                        eventName: event.name,
+                        eventtype: event.eventtype
+                    }
+                    events.push(eventObj)
                 });
 
                 return events;
@@ -116,6 +156,19 @@ import { convertToLocalDate } from '../common/time'
         methods: {
             getEventColor(event) {
                 return event.colour
+            },
+            viewDay ({ date }) {
+                this.focus = date
+                this.type = 'day'
+            },
+            setToday () {
+                this.focus = ''
+            },
+            prev () {
+                this.$refs.calendar.prev()
+            },
+            next () {
+                this.$refs.calendar.next()
             },
             showEvent({nativeEvent, event}) {
                 const open = () => {
