@@ -74,7 +74,8 @@ export default {
       let nextEvents = this.eventList.filter(event => {
 
         return (localDateTime.isBefore(event.startTime)) ||
-        (localDateTime.isBetween(event.startTime, event.endTime))
+        (localDateTime.isBetween(event.startTime, event.endTime)) || 
+        (localDateTime.isSame(event.startTime))
       })
       
       if(nextEvents.length >= 1) {
@@ -101,7 +102,8 @@ export default {
 
       // console.log(localNextDay)
 
-      let nextEvents = this.eventList.filter(event => event.startTime.isBetween(localDay, localNextDay));
+      let nextEvents = this.eventList.filter(event => (event.startTime.isBetween(localDay, localNextDay)) || 
+        (event.startTime.isSame(localNextDay)));
 
       if(nextEvents.length >= 1) {
           // console.log(nextEvents)
