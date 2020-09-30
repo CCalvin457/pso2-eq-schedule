@@ -7,12 +7,12 @@
                     <v-btn outlined class="mr-4" @click="setToday">
                         Today
                     </v-btn>
-                    <v-btn fab text small @click="prev">
+                    <!-- <v-btn fab text small @click="prev">
                         <v-icon small>mdi-chevron-left</v-icon>
                     </v-btn>
                     <v-btn fab text small @click="next">
                         <v-icon small>mdi-chevron-right</v-icon>
-                    </v-btn>
+                    </v-btn> -->
                     <v-toolbar-title v-if="refCalendar">
                         {{ $refs.calendar.title }}
                     </v-toolbar-title>
@@ -35,8 +35,8 @@
                         <v-list-item @click="type = 'week'">
                             <v-list-item-title>Week</v-list-item-title>
                         </v-list-item>
-                        <v-list-item @click="type = 'month'">
-                            <v-list-item-title>Month</v-list-item-title>
+                        <v-list-item @click="type = 'custom-weekly'">
+                            <v-list-item-title>Full Schedule</v-list-item-title>
                         </v-list-item>
                         <v-list-item @click="type = '4day'">
                             <v-list-item-title>4 days</v-list-item-title>
@@ -52,6 +52,8 @@
                         :type="type"
                         :events="getEvents"
                         :event-color="getEventColor"
+                        :start="getCalendarStart"
+                        :end="getCalendarEnd"
                         color="light-blue"
                         @click:event="showEvent"
                         @click:more="viewDay"
@@ -101,8 +103,9 @@ import { mapGetters } from 'vuex'
         data: () => ({
             refCalendar: false,
             focus: '',
-            type: 'month',
+            type: 'custom-weekly',
             typeToLabel: {
+                'custom-weekly': 'Full Schedule',
                 month: 'Month',
                 week: 'Week',
                 day: 'Day',
@@ -149,6 +152,15 @@ import { mapGetters } from 'vuex'
                 });
 
                 return events;
+            },
+
+            getCalendarStart() {
+                return this.eventList[0].startTime.clone().format('YYYY-MM-DD');
+            },
+
+            getCalendarEnd() {
+                let lastIndex = this.eventList.length - 1;
+                return this.eventList[lastIndex].startTime.clone().format('YYYY-MM-DD');
             }
         },
 
@@ -163,12 +175,12 @@ import { mapGetters } from 'vuex'
             setToday () {
                 this.focus = ''
             },
-            prev () {
-                this.$refs.calendar.prev()
-            },
-            next () {
-                this.$refs.calendar.next()
-            },
+            // prev () {
+            //     this.$refs.calendar.prev()
+            // },
+            // next () {
+            //     this.$refs.calendar.next()
+            // },
             showEvent({nativeEvent, event}) {
                 const open = () => {
                     this.selectedEvent = event;

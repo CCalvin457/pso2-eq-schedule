@@ -62,7 +62,8 @@ export default new Vuex.Store({
 
     actions: {
         getLatestSchedule({commit, dispatch}) {
-            return getCalendarEvents().then(calendarEvents => {
+            let today = new Date();
+            return getCalendarEvents(today).then(calendarEvents => {
                 let events = [];
                 calendarEvents.forEach(event => {
                     let eventName = event.summary;
@@ -92,25 +93,6 @@ export default new Vuex.Store({
                 dispatch('setLocalDateTime')
                 commit('UPDATE_IS_LOADED', true)
             })
-            // return getLatestSchedule().then(async latestSchedule => {
-
-            //     // converting timestamps into dates
-            //     latestSchedule.eqinfo.forEach(data => {
-            //         data.date = convertToDate(data.date, 'YYYY/M/D')
-            //     })
-
-            //     // console.log(latestSchedule.eqinfo)
-            //     commit('SET_CURRENT_EQ', latestSchedule)
-            //     // getting previous day
-            //     let date = new Date()
-            //     date.setHours(0, 0, 0, 0)
-            //     // date.setDate(date.getDate() - 1)
-            //     // console.log(date)
-            //     let eqs = await getEqsAfterDate(date)
-            //     dispatch('setEqsList', eqs)
-            //     dispatch('setLocalDateTime')
-            //     commit('UPDATE_IS_LOADED', true)
-            // })
         },
 
         setEqsList({commit}, eqsList) {

@@ -25,11 +25,21 @@ export async function getEqsAfterDate(date) {
     return eqs.data;
 }
 
-export async function getCalendarEvents() {
+export async function getCalendarEvents(date) {
     let events = Object;
+    let calendarId = '';
+
+    try{
+        let calendarSnapshot = await axios.post(`${process.env.VUE_APP_API}/calendar/latest`, { date: date });
+
+        calendarId = calendarSnapshot.data;
+    } catch(error) {
+        console.log(error);
+        return;
+    }
 
     try {
-        events = await axios.get(`${process.env.VUE_APP_API}/calendar`)
+        events = await axios.post(`${process.env.VUE_APP_API}/calendar`, {id: calendarId})
     } catch(error) {
         console.log(error);
         return;
