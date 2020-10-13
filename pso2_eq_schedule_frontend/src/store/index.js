@@ -63,7 +63,8 @@ export default new Vuex.Store({
     actions: {
         getLatestSchedule({commit, dispatch}) {
             let today = new Date();
-            return getCalendarEvents(today).then(calendarEvents => {
+            dispatch('setLocalDateTime')
+            getCalendarEvents(today).then(calendarEvents => {
                 let events = [];
                 calendarEvents.forEach(event => {
                     let eventName = event.summary;
@@ -90,7 +91,9 @@ export default new Vuex.Store({
                 events.sort((a, b) => compareDates(a, b))
                 // console.log(events)
                 commit('SET_EVENT_LIST', events)
-                dispatch('setLocalDateTime')
+                commit('UPDATE_IS_LOADED', true)
+            }).catch(error => {
+                console.error(error);
                 commit('UPDATE_IS_LOADED', true)
             })
         },
