@@ -1,99 +1,109 @@
 <template>
     <v-container fluid>
-        <v-row>
-            <v-col>
-                <v-sheet height="64">
-                    <v-toolbar flat>
-                    <v-btn outlined class="mr-4" @click="setToday">
-                        Today
-                    </v-btn>
-                    <!-- <v-btn fab text small @click="prev">
-                        <v-icon small>mdi-chevron-left</v-icon>
-                    </v-btn>
-                    <v-btn fab text small @click="next">
-                        <v-icon small>mdi-chevron-right</v-icon>
-                    </v-btn> -->
-                    <v-toolbar-title v-if="refCalendar">
-                        {{ $refs.calendar.title }}
-                    </v-toolbar-title>
-                    <v-spacer></v-spacer>
-                    <v-menu bottom right>
-                        <template v-slot:activator="{ on, attrs }">
-                        <v-btn
-                            outlined
-                            v-bind="attrs"
-                            v-on="on"
-                        >
-                            <span>{{ typeToLabel[type] }}</span>
-                            <v-icon right>mdi-menu-down</v-icon>
+        <template v-if="eventList.length !== 0">
+            <v-row>
+                <v-col>
+                    <v-sheet height="64">
+                        <v-toolbar flat>
+                        <v-btn outlined class="mr-4" @click="setToday">
+                            Today
                         </v-btn>
-                        </template>
-                        <v-list>
-                        <v-list-item @click="type = 'day'">
-                            <v-list-item-title>Day</v-list-item-title>
-                        </v-list-item>
-                        <v-list-item @click="type = 'week'">
-                            <v-list-item-title>Week</v-list-item-title>
-                        </v-list-item>
-                        <v-list-item @click="type = 'custom-weekly'">
-                            <v-list-item-title>Full Schedule</v-list-item-title>
-                        </v-list-item>
-                        <v-list-item @click="type = '4day'">
-                            <v-list-item-title>4 days</v-list-item-title>
-                        </v-list-item>
-                        </v-list>
-                    </v-menu>
-                    </v-toolbar>
-                </v-sheet>
-                <v-sheet>
-                    <v-calendar 
-                        ref="calendar"
-                        v-model="focus"
-                        :type="type"
-                        :events="getEvents"
-                        :event-color="getEventColor"
-                        :start="getCalendarStart"
-                        :end="getCalendarEnd"
-                        color="light-blue"
-                        @click:event="showEvent"
-                        @click:more="viewDay"
-                        @click:date="viewDay"
-                    ></v-calendar>
+                        <!-- <v-btn fab text small @click="prev">
+                            <v-icon small>mdi-chevron-left</v-icon>
+                        </v-btn>
+                        <v-btn fab text small @click="next">
+                            <v-icon small>mdi-chevron-right</v-icon>
+                        </v-btn> -->
+                        <v-toolbar-title v-if="refCalendar">
+                            {{ $refs.calendar.title }}
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-menu bottom right>
+                            <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                outlined
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                <span>{{ typeToLabel[type] }}</span>
+                                <v-icon right>mdi-menu-down</v-icon>
+                            </v-btn>
+                            </template>
+                            <v-list>
+                            <v-list-item @click="type = 'day'">
+                                <v-list-item-title>Day</v-list-item-title>
+                            </v-list-item>
+                            <v-list-item @click="type = 'week'">
+                                <v-list-item-title>Week</v-list-item-title>
+                            </v-list-item>
+                            <v-list-item @click="type = 'custom-weekly'">
+                                <v-list-item-title>Full Schedule</v-list-item-title>
+                            </v-list-item>
+                            <v-list-item @click="type = '4day'">
+                                <v-list-item-title>4 days</v-list-item-title>
+                            </v-list-item>
+                            </v-list>
+                        </v-menu>
+                        </v-toolbar>
+                    </v-sheet>
+                    <v-sheet>
+                        <v-calendar 
+                            ref="calendar"
+                            v-model="focus"
+                            :type="type"
+                            :events="getEvents"
+                            :event-color="getEventColor"
+                            :start="getCalendarStart"
+                            :end="getCalendarEnd"
+                            color="light-blue"
+                            @click:event="showEvent"
+                            @click:more="viewDay"
+                            @click:date="viewDay"
+                        ></v-calendar>
 
-                    <v-menu
-                        v-model="selectedOpen"
-                        :close-on-content-click="false"
-                        :activator="selectedElement"
-                        offset-x
-                    >
-                        <v-card color="grey lighten-4" min-width="350px" flat>
-                            <v-toolbar :color="selectedEvent.colour">
-                                <v-toolbar-title>
-                                    <span>{{ selectedEvent.eventName }} ({{ selectedEvent.eventtype }})</span>
-                                </v-toolbar-title>
-                            </v-toolbar>
-                            <v-card-text>
-                                <span class="cardText">
-                                    <strong>Start Time: </strong>
-                                    {{ selectedEvent.startTime }}
-                                </span>
-                                <v-spacer></v-spacer>
-                                <span class="cardText">
-                                    <strong>Duration: </strong>
-                                    {{ selectedEvent.duration }}
-                                </span>
-                                <v-spacer></v-spacer>
-                                <span class="cardText" v-html="selectedEvent.description">                                    
-                                </span>
-                            </v-card-text>
-                            <v-card-actions>
-                                <v-btn text color="secondary" @click="selectedOpen = false">Close</v-btn>
-                            </v-card-actions>
-                        </v-card>
-                    </v-menu>
-                </v-sheet>
+                        <v-menu
+                            v-model="selectedOpen"
+                            :close-on-content-click="false"
+                            :activator="selectedElement"
+                            offset-x
+                        >
+                            <v-card color="grey lighten-4" min-width="350px" flat>
+                                <v-toolbar :color="selectedEvent.colour">
+                                    <v-toolbar-title>
+                                        <span>{{ selectedEvent.eventName }} ({{ selectedEvent.eventtype }})</span>
+                                    </v-toolbar-title>
+                                </v-toolbar>
+                                <v-card-text>
+                                    <span class="cardText">
+                                        <strong>Start Time: </strong>
+                                        {{ selectedEvent.startTime }}
+                                    </span>
+                                    <v-spacer></v-spacer>
+                                    <span class="cardText">
+                                        <strong>Duration: </strong>
+                                        {{ selectedEvent.duration }}
+                                    </span>
+                                    <v-spacer></v-spacer>
+                                    <span class="cardText" v-html="selectedEvent.description">                                    
+                                    </span>
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-btn text color="secondary" @click="selectedOpen = false">Close</v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-menu>
+                    </v-sheet>
+                </v-col>
+            </v-row>
+        </template>
+
+        <template v-else> <!-- Display something when we don't have any more eqs to display -->
+            <v-row>
+            <v-col cols="12">
+                <p class="text-center text-h4">No upcoming events!</p>
             </v-col>
-        </v-row>
+            </v-row>
+        </template>
     </v-container>
 </template>
 
@@ -117,9 +127,9 @@ import { mapGetters } from 'vuex'
             dialog: false
         }),
 
-        mounted () {
-            this.$refs.calendar.title != undefined ? this.refCalendar = true : this.refCalendar = false
-        },
+        // mounted () {
+        //     this.$refs.calendar.title != undefined ? this.refCalendar = true : this.refCalendar = false
+        // },
 
         computed: {
             ...mapGetters({
