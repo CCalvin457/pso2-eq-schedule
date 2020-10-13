@@ -29,21 +29,17 @@ export async function getCalendarEvents(date) {
     let events = Object;
     let calendarId = '';
 
-    try{
-        let calendarSnapshot = await axios.post(`${process.env.VUE_APP_API}/calendar/latest`, { date: date });
+    let calendarSnapshot = await axios.post(`${process.env.VUE_APP_API}/calendar/latest`, { date: date })
+        .catch(error => {
+            throw error;
+        });
 
-        calendarId = calendarSnapshot.data;
-    } catch(error) {
-        console.log(error);
-        return;
-    }
+    calendarId = calendarSnapshot.data;
 
-    try {
-        events = await axios.post(`${process.env.VUE_APP_API}/calendar`, {id: calendarId})
-    } catch(error) {
-        console.log(error);
-        return;
-    }
+    events = await axios.post(`${process.env.VUE_APP_API}/calendar`, {id: calendarId})
+        .catch(error => {
+            throw error;
+        });
 
     return events.data;
 }
