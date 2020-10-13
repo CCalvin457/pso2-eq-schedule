@@ -6,16 +6,22 @@ module.exports = (app, api, db) => {
         // console.log(typeof(today));
         // let today = new Date();
         let calendarId = '';
+        let calendars = '';
 
         try {
-            let calendars = await db.collection('calendarIds').where('lastDate', '>=', today).orderBy('lastDate').get();
-            let data = calendars.docs.map(item => item.data());
-            // console.log(data);
-            calendarId = data[0].calendarId;
+            calendars = await db.collection('calendarIds').where('lastDate', '>=', today).orderBy('lastDate').get();
         } catch(err) {
             console.log(err);
             return res.status(403).send("Something went wrong!");
         }
+
+        let data = calendars.docs.map(item => item.data());
+
+        if(!Array.isArray(data) || !data.length) {
+            return res.status(404).send("No data");
+        }
+        
+        calendarId = data[0].calendarId;
 
         return res.status(200).send(calendarId);
     });
@@ -25,7 +31,6 @@ module.exports = (app, api, db) => {
         // const calendarId = 'pso2.schedule@gmail.com'
         let events = []
         // let pageToken = undefined
-
         try {
             // do {
                 let curEvents = await api.events.list({calendarId: calendarId, orderBy: 'startTime', singleEvents: true});
