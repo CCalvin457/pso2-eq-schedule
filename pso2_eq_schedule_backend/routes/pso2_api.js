@@ -13,7 +13,9 @@ const EVENTS = 'events'
 const pso2Url = process.env.PSO2_URL
 
 module.exports = (app) => {
-    app.get('/pso2/latestSchedule', async (req, res) => {
+    app.post('/pso2/latestSchedule', async (req, res) => {
+        let date = new Date(req.body.date);
+        let today = DateTime.fromJSDate(date).toUTC()
         let schedule = [];
         let latestScheduleId = 0;
         let events = [];
@@ -43,7 +45,7 @@ module.exports = (app) => {
                 { key: SCHEDULE_ID, val: {current: latestScheduleId, next: latestScheduleId + 1 }},
                 { key: EVENTS, val: events },
                 { key: END_DATE, val: DateTime.fromISO(schedule[0].schedule.endDate,
-                     {zone: schedule[0].schedule.timeZone}).setZone("UTC").toString()}
+                     {zone: schedule[0].schedule.timeZone}).toUTC()}
             ]);
         } else {
             // TODO: Check date sent from client with cached end date to see if we need to try and get a new schedule
@@ -57,8 +59,9 @@ module.exports = (app) => {
             }
         }
 
-        let date = pso2Cache.get(END_DATE)
-        console.log(date);
+        let test = pso2Cache.get(END_DATE)
+        // console.log(today)
+        console.log(today.diff(test, 'minutes').toObject())
 
         return res.status(200).send(events);
     });

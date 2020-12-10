@@ -6,8 +6,8 @@ function getEventList(schedule) {
     
     schedule.forEach(campaign => {
         campaign.events.forEach(event => {
-            let startDate = Luxon.DateTime.fromISO(event.startDate, { zone: timeZone }).setZone("UTC")
-            let endDate = Luxon.DateTime.fromISO(event.endDate, { zone: timeZone }).setZone("UTC")
+            let startDate = Luxon.DateTime.fromISO(event.startDate, { zone: timeZone }).toUTC();
+            let endDate = Luxon.DateTime.fromISO(event.endDate, { zone: timeZone }).toUTC();
             let duration = (endDate - startDate) / 60e3;
 
             let tempEventObj = {
