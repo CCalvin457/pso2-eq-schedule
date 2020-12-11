@@ -39,29 +39,41 @@ module.exports = (app) => {
                 console.log(err);
                 return res.status(403).send("Something went wrong!");
             }
-
+            let dates = schedule[0].schedule;
             // Setting cache
             pso2Cache.mset([
                 { key: SCHEDULE_ID, val: {current: latestScheduleId, next: latestScheduleId + 1 }},
                 { key: EVENTS, val: events },
-                { key: END_DATE, val: DateTime.fromISO(schedule[0].schedule.endDate,
-                     {zone: schedule[0].schedule.timeZone}).toUTC()}
+                { key: END_DATE, val: DateTime.fromISO(dates.endDate,
+                     {zone: dates.timeZone}).toUTC()}
             ]);
         } else {
-            // TODO: Check date sent from client with cached end date to see if we need to try and get a new schedule
-            
-            try {
-                let schedule = await axios.get(`${pso2Url}?scheduleId=${pso2Cache.get(SCHEDULE_ID).current}`);
-                events = getEventList(schedule.data);
-            } catch(err) {
-                console.log(err);
-                return res.status(403).send("Something went wrong!");
+            let cacheDate = pso2Cache.get(END_DATE)
+            let scheduleId = pso2Cache.get(SCHEDULE_ID).next
+            let dateDiff = cacheDate.diff(today, 'minutes').toObject()
+
+            if(dateDiff.minutes > 0) {
+                events = pso2Cache.get(EVENTS);
+            } else {
+                try {
+                    let schedule = await axios.get(`${pso2Url}?scheduleId=${scheduleId}`);
+                    let dates = schedule[0].schedule
+                    if(schedule.data.length > 0) {
+                        events = getEventList(schedule.data);
+                        pso2Cache.mset([
+                            { key: SCHEDULE_ID, val: {current: scheduleId, next: scheduleId + 1} },
+                            { key: EVENTS, val: events},
+                            { key: END_DATE, val: DateTime.fromISO(dates.endDate, {zone: dates.timeZone}).toUTC()}
+                        ])
+                    } else {
+                        events = pso2Cache.get(EVENTS); // Get cached events if we can't find a new one yet
+                    }
+                } catch(err) {
+                    console.log(err);
+                    return res.status(403).send("Something went wrong!");
+                }
             }
         }
-
-        let test = pso2Cache.get(END_DATE)
-        // console.log(today)
-        console.log(today.diff(test, 'minutes').toObject())
 
         return res.status(200).send(events);
     });
