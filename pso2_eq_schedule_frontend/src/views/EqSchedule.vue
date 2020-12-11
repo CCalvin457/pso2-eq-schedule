@@ -133,7 +133,7 @@ import { mapGetters } from 'vuex'
 
         computed: {
             ...mapGetters({
-                eventList: 'getEventList'
+                eventList: 'getAllEvents'
             }),
 
             getEvents() {

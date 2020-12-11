@@ -65,7 +65,7 @@ export default {
 
   computed: {
     ...mapGetters({
-      eventList: 'getEventList',
+      eventList: 'getEvents',
       localDateTime: 'getLocalDateTime'
     }),
 
