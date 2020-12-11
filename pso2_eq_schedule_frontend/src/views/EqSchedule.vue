@@ -144,7 +144,16 @@ import { mapGetters } from 'vuex'
                     let startTime = event.startTime.clone().format('h:mm A')
                     let endTime = event.endTime.clone().format('h:mm A')
                     
-                    let eventColour = event.eventtype === 'Concert' ? '#0277BD' : '#43A047'
+                    let eventColour = ((event) => {
+                        switch(event) {
+                            case 'Live Concert':
+                                return '#0277BD';
+                            case 'Urgent Quest':
+                                return '#43A047';
+                            default:
+                                return '#cc9106'
+                        }
+                    })(event.eventtype)
 
                     let eventObj = {
                         name: `${event.name} (${event.duration})`,

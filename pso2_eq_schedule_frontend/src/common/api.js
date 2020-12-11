@@ -27,16 +27,16 @@ export async function getEqsAfterDate(date) {
 
 export async function getCalendarEvents(date) {
     let events = Object;
-    let calendarId = '';
+    // let calendarId = '';
 
-    let calendarSnapshot = await axios.post(`${process.env.VUE_APP_API}/calendar/latest`, { date: date })
-        .catch(error => {
-            throw error;
-        });
+    // let calendarSnapshot = await axios.post(`${process.env.VUE_APP_API}/calendar/latest`, { date: date })
+    //     .catch(error => {
+    //         throw error;
+    //     });
 
-    calendarId = calendarSnapshot.data;
+    // calendarId = calendarSnapshot.data;
 
-    events = await axios.post(`${process.env.VUE_APP_API}/calendar`, {id: calendarId})
+    events = await axios.post(`${process.env.VUE_APP_API}/pso2/latestSchedule`, {date: date})
         .catch(error => {
             throw error;
         });

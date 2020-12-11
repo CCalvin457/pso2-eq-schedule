@@ -3,8 +3,8 @@ import Vuex from 'vuex'
 // import { getLatestSchedule, getEqsAfterDate, getCalendarEvents } from '../common/api'
 // import { convertToLocalDate, convertToDate, getLocalDateTime } from '../common/time'
 import { getCalendarEvents } from '../common/api'
-import { convertToLocalDate, getLocalDateTime, convertToMomentDate } from '../common/time'
-import { compareDates } from '../common/helper'
+import { convertToLocalDate, convertToMomentDate, getLocalDateTime,  } from '../common/time'
+// import { compareDates } from '../common/helper'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -65,32 +65,33 @@ export default new Vuex.Store({
             let today = new Date();
             dispatch('setLocalDateTime')
             getCalendarEvents(today).then(calendarEvents => {
-                let events = [];
+                // let events = [];
                 calendarEvents.forEach(event => {
-                    let eventName = event.summary;
-                    let serverStartTime = new Date(event.start.dateTime);
-                    let serverEndTime = new Date(event.end.dateTime);
-                    let duration = (serverEndTime - serverStartTime) / 60e3
+                    // let eventName = event.summary;
+                    // let serverStartTime = new Date(event.start.dateTime);
+                    // let serverEndTime = new Date(event.end.dateTime);
+                    // let duration = (serverEndTime - serverStartTime) / 60e3
+                    event.startTime = convertToMomentDate(event.startTime)
+                    event.endTime = convertToMomentDate(event.endTime)
+                    // serverStartTime = convertToMomentDate(serverStartTime)
+                    // serverEndTime = convertToMomentDate(serverEndTime)
 
-                    serverStartTime = convertToMomentDate(serverStartTime)
-                    serverEndTime = convertToMomentDate(serverEndTime)
+                    // let tempEventObj = {
+                    //     name: eventName,
+                    //     eventtype: eventName.toLowerCase().includes('concert') ? 'Concert' : 'Urgent Quest',
+                    //     startTime: serverStartTime,
+                    //     endTime: serverEndTime,
+                    //     duration: `${duration} minutes`,
+                    //     description: event.description
+                    // }
 
-                    let tempEventObj = {
-                        name: eventName,
-                        eventtype: eventName.toLowerCase().includes('concert') ? 'Concert' : 'Urgent Quest',
-                        startTime: serverStartTime,
-                        endTime: serverEndTime,
-                        duration: `${duration} minutes`,
-                        description: event.description
-                    }
-
-                    events.push(tempEventObj)
+                    // events.push(tempEventObj)
                 })
 
                 // console.log(events)
-                events.sort((a, b) => compareDates(a, b))
+                // events.sort((a, b) => compareDates(a, b))
                 // console.log(events)
-                commit('SET_EVENT_LIST', events)
+                commit('SET_EVENT_LIST', calendarEvents)
                 commit('UPDATE_IS_LOADED', true)
             }).catch(error => {
                 console.error(error);
