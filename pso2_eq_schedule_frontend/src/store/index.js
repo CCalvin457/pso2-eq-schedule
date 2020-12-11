@@ -59,7 +59,6 @@ export default new Vuex.Store({
                 })
 
                 commit('SET_EVENT_LIST', calendarEvents)
-                console.log(calendarEvents.length)
                 dispatch('setUrgentQuestList')
                 commit('UPDATE_IS_LOADED', true)
             }).catch(error => {
@@ -70,7 +69,6 @@ export default new Vuex.Store({
 
         setUrgentQuestList({commit, state}) {
             let events = state.allEvents.filter(event => (event.eventtype == 'Live Concert') || (event.eventtype == 'Urgent Quest'))
-            console.log(events.length);
             commit('SET_URGENT_QUESTS', events)
         },
 
