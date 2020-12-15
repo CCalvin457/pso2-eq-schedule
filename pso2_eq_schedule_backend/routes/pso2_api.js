@@ -39,7 +39,7 @@ module.exports = (app) => {
                         ])
                     }
                     // Get cached events regardless of if theres a new event schedule set or not
-                    return res.status(200).send(events);
+                    return res.status(200).send(pso2Cache.get(EVENTS));
                 } catch(err) {
                     console.log(err);
                     return res.status(403).send("Something went wrong!");
