@@ -50,9 +50,9 @@ export default new Vuex.Store({
 
     actions: {
         getLatestSchedule({commit, dispatch}) {
-            let today = new Date();
+            // let today = new Date();
             dispatch('setLocalDateTime')
-            getCalendarEvents(today).then(calendarEvents => {
+            getCalendarEvents().then(calendarEvents => {
                 calendarEvents.forEach(event => {
                     event.startTime = convertToMomentDate(event.startTime)
                     event.endTime = convertToMomentDate(event.endTime)

@@ -25,7 +25,7 @@ export async function getEqsAfterDate(date) {
     return eqs.data;
 }
 
-export async function getCalendarEvents(date) {
+export async function getCalendarEvents() {
     let events = Object;
     // let calendarId = '';
 
@@ -36,7 +36,7 @@ export async function getCalendarEvents(date) {
 
     // calendarId = calendarSnapshot.data;
 
-    events = await axios.post(`${process.env.VUE_APP_API}/pso2/latestSchedule`, {date: date})
+    events = await axios.get(`${process.env.VUE_APP_API}/pso2/latestSchedule`)
         .catch(error => {
             throw error;
         });
