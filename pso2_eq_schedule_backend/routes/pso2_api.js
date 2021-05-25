@@ -28,7 +28,7 @@ module.exports = (app) => {
                 return res.status(200).send(pso2Cache.get(EVENTS));
             } else {
                 try {
-                    let schedule = await axios.get(`${pso2Url}?scheduleId=${scheduleId}`, {headers: {'Cookie': 'pso2-AgeGate=true'}});
+                    let schedule = await axios.get(`${pso2Url}?scheduleId=${scheduleId}`, {headers: {'Cookie': 'pso2-age.verification=true'}});
                     let dateInfo = schedule[0].schedule
                     if(schedule.data.length > 0) {
                         events = getEventList(schedule.data);
@@ -49,8 +49,8 @@ module.exports = (app) => {
         
         // If we don't see a cached schedule id
         try {
-            let pso2Schedule = await axios.get(`${pso2Url}`, {headers: {'Cookie': 'pso2-AgeGate=true'}});
-            
+            let pso2Schedule = await axios.get(`${pso2Url}`, {headers: {'Cookie': 'pso2-age.verification=true'}});
+            console.log(pso2Schedule.data);
             // Find the latest schedule id
             latestScheduleId = pso2Schedule.data.reduce((prev, current) => {
                 return (prev.scheduleId > current.scheduleId) ? prev.scheduleId : current.scheduleId
